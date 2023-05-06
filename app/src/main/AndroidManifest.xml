@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -10,39 +12,64 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.SaharaShop"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".BillHistoryActivity"
+            android:name=".FragmentDiscountActivity"
             android:exported="false" />
         <activity
-            android:name=".ProductItemActivity"
+            android:name=".activity.FragmentCartActivity"
             android:exported="false" />
         <activity
-            android:name=".ProductDetailActivity"
+            android:name=".FeatureHelpActivity"
             android:exported="false" />
         <activity
-            android:name=".ProductActivity"
+            android:name=".activity.FeatureChangeLanguageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FragmentHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FragmentMenuActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FragmentMessageBoxActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FragmentNotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CartDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.BillHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ProductDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ProductItemActivity"
             android:exported="false" />
         <activity
             android:name=".activity.MenuItemActivity"
             android:exported="false" />
         <activity
-            android:name=".SearchActivity"
+            android:name=".activity.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".activity.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".EmailPasswordActivity"
+            android:name=".activity.EmailPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".AccountInfoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.SignupActivity$AccountInfoActivity"
+            android:name=".activity.AccountInfoActivity"
             android:exported="false" />
         <activity
             android:name=".activity.SignupActivity"

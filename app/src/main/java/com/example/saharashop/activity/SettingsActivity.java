@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.example.saharashop.R;
+
 public class SettingsActivity extends AppCompatActivity {
 
     @Override
