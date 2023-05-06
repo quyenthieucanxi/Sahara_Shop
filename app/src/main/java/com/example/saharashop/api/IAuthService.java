@@ -1,16 +1,24 @@
 package com.example.saharashop.api;
 
-import com.example.saharashop.entity.Account;
+import com.example.saharashop.entity.Account1;
+import com.example.saharashop.entity.Test;
+import com.example.saharashop.entity.User;
 
 import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface IAuthService {
-    @POST("/appfoods/registrationapi.php?apicall=login")
-    @FormUrlEncoded
-    Call<Account> login(@Field("email") String username,
-                        @Field("password") String password);
+
+
+    @POST("account/login")
+    Call<Account1> login(@Body Test test);
+    /*@FormUrlEncoded
+    Call<Resp> login(@Field("username") String username,
+                     @Field("password") String password);*/
+    @POST("account/sign-up")
+    Call<Account1> signUp(@Body Account1 account);
+    @POST("user/addUser")
+    Call<User> addUser(@Body User user);
 
 }

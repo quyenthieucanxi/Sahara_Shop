@@ -4,83 +4,73 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.FragmentNotificationActivity">
+    tools:context=".fragment.CartFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_mode"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/topNavbar"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFA000">
-
-            <ImageButton
-                android:id="@+id/btnBack_notification"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginVertical="10dp"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/arrow_back"
-                android:contentDescription="btnBack"/>
+            android:background="#FFA000"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/txtSearch_notification"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="32dp"
                 android:layout_marginVertical="10dp"
-                android:layout_marginRight="20dp"
                 android:layout_weight="20"
                 android:ems="10"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="@string/notifications"
+                android:text="@string/cart"
                 android:textColor="#ffffff"
                 android:textColorHint="#ffffff"
-                android:textSize="30sp"
-                android:font="@font/bungee"/>
+                android:textSize="18sp" />
         </LinearLayout>
 
         <ScrollView
+            android:id="@+id/cartList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            android:fillViewport="true">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvNotifications"
+                android:id="@+id/rvCart"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="10dp"
                 android:layoutAnimation="@anim/layout_animation_fall_down" />
         </ScrollView>
 
         <LinearLayout
-            android:id="@+id/noMoreNotifications"
+            android:id="@+id/noMoreCarts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="10"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:gravity="center">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/notification_100px" />
+                android:background="@drawable/add_shopping_cart_100px" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/no_more_notifications"
+                android:layout_marginHorizontal="80dp"
+                android:text="@string/no_more_carts"
+                android:textAlignment="center"
                 android:textColor="@color/theme_color"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
+
 </FrameLayout>
