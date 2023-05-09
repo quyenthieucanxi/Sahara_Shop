@@ -11,7 +11,7 @@ import retrofit2.http.POST;
 
 
 public class APIService {
-    private  static  final  String BASE_URL = "http://app.iotstar.vn";
+    private  static  final  String BASE_URL = "https://apimobile.vercel.app/";
 
     static Gson gson = new GsonBuilder().setDateFormat("yyyy MM dd HH:mm:ss").create();
     private static final Retrofit.Builder builder
@@ -26,7 +26,4 @@ public class APIService {
     public static <S> S createService(Class<S> serviceClass) {
         return retrofit.create(serviceClass);
     }
-
-
-
 }

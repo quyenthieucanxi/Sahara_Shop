@@ -8,7 +8,7 @@
     android:background="@color/light_mode"
     android:orientation="vertical"
     android:scrollbars="vertical"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <FrameLayout
         android:id="@+id/frame_container"

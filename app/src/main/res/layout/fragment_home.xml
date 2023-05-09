@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".activity.FragmentHomeActivity">
+    tools:context=".fragment.HomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -172,4 +172,6 @@
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
+
+
 </FrameLayout>
