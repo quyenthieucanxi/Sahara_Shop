@@ -9,9 +9,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
 import com.example.saharashop.R;
+import com.example.saharashop.activity.ProductDetailActivity;
 import com.example.saharashop.activity.SearchActivity;
+import com.example.saharashop.adapter.ProductAdapter;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,6 +27,8 @@ public class HomeFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    public static final String PROMO_PRODUCT_ID = "productId";
+    public static final String PRODUCT_TYPE_ID = "productType";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -80,7 +87,19 @@ public class HomeFragment extends Fragment {
                 return false;
             }
         });
+        //setPromoItem(view);
         return view;
     }
+//    private void setPromoItem(@NotNull View view) {
+//        //List<Product> promoProducts = productDbHelper.getPromoProducts(4);
+//        //ProductAdapter productAdapter = new ProductAdapter(getContext(), promoProducts);
+//        GridView gv_promo = view.findViewById(R.id.homePromo);
+//        gv_promo.setOnItemClickListener((parent, view1, position, id) -> {
+//            Intent intent = new Intent(this.getContext(), ProductDetailActivity.class);
+//            intent.putExtra(PROMO_PRODUCT_ID, productAdapter.getItemId(position));
+//            startActivity(intent);
+//        });
+//        gv_promo.setAdapter(productAdapter);
+//    }
 
 }
