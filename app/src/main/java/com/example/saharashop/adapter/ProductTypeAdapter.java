@@ -10,18 +10,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
-import com.example.saharashop.entity.Product;
+import com.example.saharashop.entity.ProductType;
 
 import java.util.List;
 
-public class ProductAdapter extends BaseAdapter {
-    private List<Product> productList;
+public class ProductTypeAdapter extends BaseAdapter {
+    private List<ProductType> productTypes;
     private LayoutInflater inflater;
     private Context context;
 
-    public ProductAdapter(Context context, List<Product> productList) {
+    public ProductTypeAdapter(Context context, List<ProductType> productTypes) {
         inflater = LayoutInflater.from(context);
-        this.productList = productList;
+        this.productTypes = productTypes;
         this.context = context;
     }
 
@@ -33,22 +33,22 @@ public class ProductAdapter extends BaseAdapter {
         this.inflater = inflater;
     }
 
-    public List<Product> getProductList() {
-        return productList;
+    public List<ProductType> getProductTypes() {
+        return productTypes;
     }
 
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
+    public void setProductTypes(List<ProductType> productTypes) {
+        this.productTypes = productTypes;
     }
 
     @Override
     public int getCount() {
-        return productList == null ? 0 : productList.size();
+        return productTypes == null ? 0 : productTypes.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return productList.get(position);
+        return productTypes.get(position);
     }
 
     @Override
@@ -56,47 +56,39 @@ public class ProductAdapter extends BaseAdapter {
         return -1;
     }
 
-    public String getItemId_v2(int position) {
-        return productList.get(position).getId();
+    public String getItemId_v2(int position){
+        return productTypes.get(position).getId();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ProductView productView;
+        ProductTypeAdapter.ProductTypeView productView;
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.activity_product_item, parent, false);
 
-            productView = new ProductView();
+            productView = new ProductTypeAdapter.ProductTypeView();
             productView.ibtnProduct = convertView.findViewById(R.id.ibtnProduct);
             productView.tv_product_name = convertView.findViewById(R.id.tv_product_name);
-            productView.tvDiscount = convertView.findViewById(R.id.tvDiscount);
+            productView.iv_special_image = convertView.findViewById(R.id.tvDiscount);
 
             convertView.setTag(productView);
         } else {
-            productView = (ProductView) convertView.getTag();
+            productView = (ProductTypeAdapter.ProductTypeView) convertView.getTag();
         }
 
-
-        Product product = productList.get(position);
-        Glide.with(context).load(product.getImage()).into(productView.ibtnProduct);
-
-        productView.tv_product_name.setText(product.getName());
-
-//        if (null != product.getDiscount()) {
-//            productView.tvDiscount.setVisibility(View.VISIBLE);
-//            Float discountValue = product.getDiscount().getValue();
-//            productView.tvDiscount.setText(discountValue.toString());
-//        } else {
-//            productView.tvDiscount.setVisibility(View.INVISIBLE);
-//        }
+        ProductType productType = productTypes.get(position);
+//        productView.ibtnProduct.setImageBitmap(productType.getImage());
+        Glide.with(context).load(productType.getImage()).into(productView.ibtnProduct);
+        productView.iv_special_image.setVisibility(View.INVISIBLE);
+        productView.tv_product_name.setText(productType.getName());
 
         return convertView;
     }
 
-    private class ProductView {
+    private class ProductTypeView {
         private ImageView ibtnProduct;
         private TextView tv_product_name;
-        private TextView tvDiscount;
+        private TextView iv_special_image;
     }
 }

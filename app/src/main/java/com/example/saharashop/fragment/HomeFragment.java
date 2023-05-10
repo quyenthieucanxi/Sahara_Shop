@@ -6,17 +6,28 @@ import android.os.Bundle;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.saharashop.R;
-import com.example.saharashop.activity.ProductDetailActivity;
+import com.example.saharashop.activity.MainActivity;
 import com.example.saharashop.activity.SearchActivity;
-import com.example.saharashop.adapter.ProductAdapter;
+import com.example.saharashop.adapter.ProductTypeAdapter;
+import com.example.saharashop.api.APIService;
+import com.example.saharashop.api.IProductType;
+import com.example.saharashop.entity.ProductType;
 
-import org.jetbrains.annotations.NotNull;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,16 +36,19 @@ import org.jetbrains.annotations.NotNull;
  */
 public class HomeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String PROMO_PRODUCT_ID = "productId";
     public static final String PRODUCT_TYPE_ID = "productType";
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    List<ProductType> productTypes = new ArrayList<>();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -87,19 +101,46 @@ public class HomeFragment extends Fragment {
                 return false;
             }
         });
-        //setPromoItem(view);
+
+        getAllProductTypes();
+
         return view;
     }
-//    private void setPromoItem(@NotNull View view) {
-//        //List<Product> promoProducts = productDbHelper.getPromoProducts(4);
-//        //ProductAdapter productAdapter = new ProductAdapter(getContext(), promoProducts);
-//        GridView gv_promo = view.findViewById(R.id.homePromo);
-//        gv_promo.setOnItemClickListener((parent, view1, position, id) -> {
-//            Intent intent = new Intent(this.getContext(), ProductDetailActivity.class);
-//            intent.putExtra(PROMO_PRODUCT_ID, productAdapter.getItemId(position));
-//            startActivity(intent);
-//        });
-//        gv_promo.setAdapter(productAdapter);
-//    }
+
+    private void setProductItem(View view){
+
+        ProductTypeAdapter productTypeAdapter = new ProductTypeAdapter(getContext(), productTypes);
+        GridView gv_product = view.findViewById(R.id.homeProduct);
+        gv_product.setOnItemClickListener((parent, view1, position, id) -> {
+            Intent intent = new Intent(this.getContext(), SearchActivity.class);
+            intent.putExtra(PRODUCT_TYPE_ID, productTypeAdapter.getItemId_v2(position));
+            startActivity(intent);
+        });
+        gv_product.setAdapter(productTypeAdapter);
+        Log.d("T", "Value: " + productTypes.size());
+    }
+
+    private void getAllProductTypes(){
+        APIService.createService(IProductType.class).getAllProductTypes().enqueue(new Callback<List<ProductType>>() {
+            @Override
+            public void onResponse(Call<List<ProductType>> call, Response<List<ProductType>> response) {
+                if(response.code() != 200){
+                    return;
+                }
+
+                productTypes = response.body();
+                setProductItem(getView());
+                Log.d("T09", "Value: " + productTypes.size());
+
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductType>> call, Throwable t) {
+
+            }
+
+
+        });
+    }
 
 }

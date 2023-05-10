@@ -96,6 +96,8 @@ public class Login  extends AppCompatActivity {
                     ,response.body().getRoleID(),response.body().getState());
 
                     Toast.makeText(getApplicationContext(),account1.getUsername() , Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Login.this, MainActivity.class);
+                    startActivity(intent);
                 }
                 else {
                     Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
