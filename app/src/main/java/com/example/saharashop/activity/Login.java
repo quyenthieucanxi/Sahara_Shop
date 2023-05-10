@@ -92,12 +92,16 @@ public class Login  extends AppCompatActivity {
             @Override
             public void onResponse(Call<Account1> call, Response<Account1> response) {
                 if (response.isSuccessful()) {
-                    Account1 account1 = new Account1(response.body().getId(),response.body().getUsername(),response.body().getEmail(),response.body().getPassword()
-                    ,response.body().getRoleID(),response.body().getState());
+                    if (response.body() != null) {
+                        Account1 account1 = new Account1(response.body().getId(), response.body().getUsername(), response.body().getEmail(), response.body().getPassword()
+                                , response.body().getRoleID(), response.body().getState());
 
-                    Toast.makeText(getApplicationContext(),account1.getUsername() , Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(Login.this, MainActivity.class);
-                    startActivity(intent);
+                        Toast.makeText(getApplicationContext(), "Đăng nhập thành công với" + account1.getUsername(), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Login.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                    else
+                        Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();

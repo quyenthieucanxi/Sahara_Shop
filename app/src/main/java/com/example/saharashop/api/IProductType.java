@@ -24,4 +24,13 @@ public interface IProductType {
     @POST("product/getProductByListTypeId")
     Call<List<Product>> getProductByListTypeId(@Body Map<String, ArrayList<String>> requestBody);
 
+    @POST("product/getProductByTypeName")
+    Call<List<Product>> getProductByTypeName(@Body Map<String,String> TxtSearch);
+
+    @GET("product/getAllProducts")
+    Call<List<Product>> getAllProducts();
+
+    @GET("product/getProductById/{id}")
+    Call<Product> getProductById(@Path("id") String Id_product);
+
 }

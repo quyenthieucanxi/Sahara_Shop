@@ -3,12 +3,20 @@ package com.example.saharashop.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.saharashop.R;
+import com.example.saharashop.adapter.RecyleItemViewAdapter;
+import com.example.saharashop.entity.MenuItem;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,10 +71,22 @@ public class MenuFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         //ButterKnife.bind(this, view);
-
-        //setMenuItemSection(view);
+        setMenuItemSection(view);
         //checkLogin();
 
         return view;
+    }
+//    private void setLoggedInUserInfo() {
+//        menuAvatar.setImageBitmap(user.getAvatar());
+//        menuFullName.setText(user.getFullname());
+//        menuUsername.setText("@" + account.getUsername());
+//    }
+    private void setMenuItemSection(@NotNull View view) {
+        List<MenuItem> lstMenuItems = MenuItem.createListMenuItem();
+        RecyleItemViewAdapter adapter = new RecyleItemViewAdapter(lstMenuItems);
+        RecyclerView rv_account = view.findViewById(R.id.rv_menu_item);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rv_account.setLayoutManager(layoutManager);
+        rv_account.setAdapter(adapter);
     }
 }

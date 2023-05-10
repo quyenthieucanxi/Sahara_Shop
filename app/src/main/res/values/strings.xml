@@ -48,7 +48,7 @@
     <string name="btnTakePhoto">Take a photo</string>
 
     <string name="help">Help</string>
-    <string name="help_url" translatable="false">https://github.com/TienNHM/VietShop/wiki</string>
+    <string name="help_url" translatable="false">https://github.com/quyenthieucanxi/Sahara_Shop</string>
     <string name="change_language">Change language</string>
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="details">Details</string>

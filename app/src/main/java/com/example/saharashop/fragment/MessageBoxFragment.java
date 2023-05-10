@@ -3,10 +3,13 @@ package com.example.saharashop.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
+
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.saharashop.R;
 
@@ -15,10 +18,11 @@ import com.example.saharashop.R;
  * Use the {@link MessageBoxFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MessageBoxFragment extends Fragment {
+public class MessageBoxFragment extends  DialogFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private String selectedLanguage;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -28,6 +32,9 @@ public class MessageBoxFragment extends Fragment {
 
     public MessageBoxFragment() {
         // Required empty public constructor
+    }
+    public MessageBoxFragment(String selectedLanguage) {
+        this.selectedLanguage = selectedLanguage;
     }
 
     /**
@@ -61,6 +68,20 @@ public class MessageBoxFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_message_box, container, false);
+        View view = inflater.inflate(R.layout.fragment_message_box, container, false);
+        view.findViewById(R.id.btnCloseMsg).setOnClickListener(v -> {
+            this.dismiss();
+        });
+        view.findViewById(R.id.btnCancelMsg).setOnClickListener(v -> {
+            this.dismiss();
+        });
+        view.findViewById(R.id.btnOkMsg).setOnClickListener(v -> {
+            ChangeLanguage();
+            this.dismiss();
+        });
+        return view;
+    }
+    private void ChangeLanguage() {
+        Toast.makeText(getContext(), this.selectedLanguage, Toast.LENGTH_SHORT).show();
     }
 }

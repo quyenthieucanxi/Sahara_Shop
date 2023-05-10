@@ -127,7 +127,9 @@ public class Product {
     @SerializedName("state")
     @Expose
     private Boolean state;
+    public  Product(){
 
+    }
     public Product(String storeId, String typeId, String name, long price, String image, int defaultImage, String detail, int star, Boolean state) {
         this.storeId = storeId;
         this.typeId = typeId;

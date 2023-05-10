@@ -33,6 +33,7 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<String> selectedProductTypes = new ArrayList<>();
     private String txtSearch;
     private List<Product> products = new ArrayList<>();
+    private List<Product> ListproductsBySearch = new ArrayList<>();
     private List<Product> productsByListTypeId = new ArrayList<>();
 
     @Override
@@ -53,7 +54,7 @@ public class SearchActivity extends AppCompatActivity {
         binding.chipElectronic.setOnCheckedChangeListener(this::setChipElectronicOnCheckedChanged);
         binding.chipOthers.setOnCheckedChangeListener(this::setChipOthersOnCheckedChanged);
         binding.chipAllProductTypes.setOnCheckedChangeListener(this::setChipAllTypesOnCheckedChanged);
-        binding.chipAllProductTypes.setChecked(true);
+        //binding.chipAllProductTypes.setChecked(true);
 
         this.txtSearch = getIntent().getStringExtra("search");
         String productTypeId = getIntent().getStringExtra(HomeFragment.PRODUCT_TYPE_ID);
@@ -62,7 +63,7 @@ public class SearchActivity extends AppCompatActivity {
 
         if (this.txtSearch != null) {
             binding.tvSearch.setText(txtSearch);
-            //getSearchResult();
+            getSearchResult();
         } else {
             binding.tvSearch.setText("Xem sản phẩm theo loại");
             setShowProductByTypeId(productTypeId);
@@ -185,8 +186,13 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setChipAllTypesOnCheckedChanged(CompoundButton compoundButton, boolean b) {
-        if (this.txtSearch == null)
+        if (this.txtSearch == null  ) {
+            if (b)
+                getAllProduct();
+            else
+                getSearchResultByType();
             return;
+        }
         if (b) {
             binding.chipFood.setChecked(false);
             binding.chipClothes.setChecked(false);
@@ -201,15 +207,34 @@ public class SearchActivity extends AppCompatActivity {
             selectedProductTypes.add("645a68e4bb7d9f27fb9a75d9");
             selectedProductTypes.add("645a68ffbb7d9f27fb9a75da");
             //getSearchResult();
+            getSearchResultByType();
         } else {
             selectedProductTypes.clear();
         }
 //        ProductDbHelper productDbHelper = new ProductDbHelper(this);
 //        ArrayList<Product> products = productDbHelper.getFullSearchResult(txtSearch);
-        getSearchResultByType();
+        getSearchResult();
 
     }
+    private  void getAllProduct(){
 
+        APIService.createService(IProductType.class).getAllProducts().enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                if(!response.isSuccessful()){
+                    Log.d("T", "Thất bại!");
+                    return;
+                }
+                products = response.body();
+                setProductsOnGridView(products);
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+
+            }
+        });
+    }
     private void getSearchResultByType() {
         Map<String, ArrayList<String>> requestBody = new HashMap<>();
 
@@ -231,6 +256,31 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
     }
+    private void getSearchResult() {
+        if (this.txtSearch == null)
+            return;
+        Map<String, String> txtSearchRq = new HashMap<>();
+        txtSearchRq.put("typeName", txtSearch);
+        APIService.createService(IProductType.class).getProductByTypeName(txtSearchRq).enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                if(!response.isSuccessful()){
+                    Log.d("T", "Thất bại!");
+                    return;
+                }
+                ListproductsBySearch = response.body();
+                if (products == null)
+                    return;
+                setProductsOnGridView(ListproductsBySearch);
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                Log.d("T", "Thất bại!");
+            }
+        });
+
+    }
 
 
     private void setProductsOnGridView(List<Product> products) {
@@ -239,11 +289,11 @@ public class SearchActivity extends AppCompatActivity {
         ProductAdapter adapter = new ProductAdapter(this, products);
 
         GridView gridView = findViewById(R.id.searchResult);
-//        gridView.setOnItemClickListener((parent, view1, position, id) -> {
-//            Intent intent = new Intent(this, ProductDetail.class);
-//            intent.putExtra(ProductDetail.PRODUCT_ID, adapter.getItemId(position));
-//            startActivity(intent);
-//        });
+        gridView.setOnItemClickListener((parent, view1, position, id) -> {
+            Intent intent = new Intent(this, ProductDetailActivity.class);
+           intent.putExtra(ProductDetailActivity.PRODUCT_ID, adapter.getItemId_v2(position));
+          startActivity(intent);
+       });
         gridView.setAdapter(adapter);
     }
 }
