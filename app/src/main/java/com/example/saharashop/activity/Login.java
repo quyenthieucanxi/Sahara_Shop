@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -13,9 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.saharashop.api.APIService;
 import com.example.saharashop.api.IAuthService;
+import com.example.saharashop.api.IUserService;
 import com.example.saharashop.databinding.LoginBinding;
 import com.example.saharashop.entity.Account1;
 import com.example.saharashop.entity.Test;
+import com.example.saharashop.entity.User;
+import com.example.saharashop.fragment.MenuFragment;
+import com.example.saharashop.untils.SharedPrefManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,10 +34,10 @@ public class Login  extends AppCompatActivity {
         binding = LoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Context ctx = this;
-        /*if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
             finish();
             startActivity(new Intent(this, MainActivity.class));
-        }*/
+        }
         binding.btnLogIn.setOnClickListener(view -> Login());
         binding.txtSignUp.setOnClickListener(view -> Singup());
 
@@ -49,54 +54,50 @@ public class Login  extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-    /*@SuppressLint("NotConstructor")
-    private void Login() {
-        String username = binding.email.getText().toString();
-        String password = binding.txtPassword.getText().toString();
-        APIService.createService(IAuthService.class).login(username, password).enqueue(new Callback<Resp>() {
-            @Override
-            public void onResponse(Call<Resp> call, Response<Resp> response) {
 
-                if (response.body().getError().equals("false")) {
-                    Toast.makeText(getApplicationContext(), response.body().getMessage(),
-                            Toast.LENGTH_SHORT).show();
-                    User userJson = response.body().getUser();
-                    User user = new User(
-                            userJson.getId(),
-                            userJson.getUsername(),
-                            userJson.getEmail(),
-                            userJson.getGender(),
-                            userJson.getImages(),
-                            userJson.getFname()
-                    );
-                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-                    finish();
-                    Intent intent = new Intent(Login.this, MainActivity.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
+    private void addUserToSharedPref(Account1 account1){
+        APIService.createService(IUserService.class).getUserByAccountId(account1.getId()).enqueue(new Callback<User>() {
             @Override
-            public void onFailure(Call<Resp> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                }
+                User userJson = response.body();
+                User user = new User(
+                        userJson.getId(),
+                        userJson.getAccountId(),
+                        userJson.getFullname(),
+                        userJson.getSex(),
+                        userJson.getPhone(),
+                        userJson.getAddress(),
+                        userJson.getAvatar(),
+                        userJson.getState()
+                );
+
+                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user, account1);
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
             }
         });
-    }*/
+    }
+
     @SuppressLint("NotConstructor")
     private void Login() {
-        String username = binding.email.getText().toString().trim();
+        String email = binding.email.getText().toString().trim();
         String password = binding.txtPassword.getText().toString().trim();
-        Test user = new Test(username,password);
+        Test user = new Test(email,password);
         APIService.createService(IAuthService.class).login(user).enqueue(new Callback<Account1>() {
             @Override
             public void onResponse(Call<Account1> call, Response<Account1> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        Account1 account1 = new Account1(response.body().getId(), response.body().getUsername(), response.body().getEmail(), response.body().getPassword()
-                                , response.body().getRoleID(), response.body().getState());
+                        Account1 account1 = response.body();
+                        addUserToSharedPref(account1);
 
-                        Toast.makeText(getApplicationContext(), "Đăng nhập thành công với" + account1.getUsername(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Đăng nhập thành công với", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, MainActivity.class);
                         startActivity(intent);
                     }

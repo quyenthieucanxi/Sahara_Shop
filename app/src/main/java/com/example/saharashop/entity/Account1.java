@@ -38,6 +38,9 @@ public class Account1 {
         this.roleID = roleID;
         this.state = state;
     }
+    public Account1(String email) {
+        this.email = email;
+    }
 
     public String getId() {
         return id;
