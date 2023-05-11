@@ -15,9 +15,12 @@ import com.example.saharashop.api.APIService;
 import com.example.saharashop.api.IAuthService;
 import com.example.saharashop.api.ICartService;
 import com.example.saharashop.api.IProductType;
+import com.example.saharashop.api.IStore;
 import com.example.saharashop.databinding.ActivityProductDetailBinding;
 import com.example.saharashop.entity.Cart;
 import com.example.saharashop.entity.Product;
+import com.example.saharashop.entity.Store;
+import com.example.saharashop.untils.SharedPrefManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +43,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         this.quantity = 0;
         binding.txtQuantity.setText("0");
-//        binding.btnViewCart.setVisibility(View.GONE);
+        binding.btnViewCart.setVisibility(View.GONE);
         binding.btnBackDetail.setOnClickListener(view -> finish());
         binding.btnViewCart.setOnClickListener(this::setViewCart);
         binding.plus.setOnClickListener(this::setAddQuantity);
@@ -82,7 +85,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                         setProductImage();
                         setProductTitle();
                         setProductDetail();
-                        //setProductStore();
+                        setProductStore();
                         binding.svReview.setVisibility(View.GONE);
                     }
                 }
@@ -98,13 +101,30 @@ public class ProductDetailActivity extends AppCompatActivity {
 
 
     }
-    /*private void setProductStore() {
-        Store store = productDbHelper.getStore(this.product.getStoreId());
-        if (store != null) {
-            ((TextView) findViewById(R.id.productStore)).setText(store.getName());
-            ((TextView) findViewById(R.id.productStoreAddress)).setText(store.getAddress());
-        }
-    }*/
+    private void setProductStore() {
+
+        APIService.createService(IStore.class).getStoreByProductId(this.product.getId())
+                .enqueue(new Callback<Store>() {
+                    @Override
+                    public void onResponse(Call<Store> call, Response<Store> response) {
+                        if (response.isSuccessful()) {
+                            Store store = response.body();
+                            if (store != null) {
+                                ((TextView) findViewById(R.id.productStore)).setText(store.getName());
+                                ((TextView) findViewById(R.id.productStoreAddress)).setText(store.getAddress());
+                            }
+                        }
+                        else
+                            Log.d("T", "Sai dữ liệu");
+                    }
+
+                    @Override
+                    public void onFailure(Call<Store> call, Throwable t) {
+                        Log.d("T", "Lỗi hệ thống");
+                    }
+                });
+
+    }
 
     private void setProductImage() {
         if (product.getImage() != null) {
@@ -129,7 +149,8 @@ public class ProductDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Số lượng sản phẩm tối thiểu là 1.", Toast.LENGTH_SHORT).show();
             return;
         }
-        Cart cartNew = new Cart("642a5b4ece856f8266e96d74",this.product.getId(),this.quantity);
+
+        Cart cartNew = new Cart(SharedPrefManager.getInstance(getApplicationContext()).getAccount().getId(),this.product.getId(),this.quantity);
         APIService.createService(ICartService.class).addCart(cartNew).enqueue(new Callback<Cart>() {
             @Override
             public void onResponse(Call<Cart> call, Response<Cart> response) {
