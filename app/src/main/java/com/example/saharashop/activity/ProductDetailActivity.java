@@ -13,8 +13,10 @@ import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
 import com.example.saharashop.api.APIService;
 import com.example.saharashop.api.IAuthService;
+import com.example.saharashop.api.ICartService;
 import com.example.saharashop.api.IProductType;
 import com.example.saharashop.databinding.ActivityProductDetailBinding;
+import com.example.saharashop.entity.Cart;
 import com.example.saharashop.entity.Product;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +28,9 @@ import retrofit2.Response;
 public class ProductDetailActivity extends AppCompatActivity {
     public static final String PRODUCT_ID = "productId";
     private Product product = new Product();
+    private static Cart cart = new Cart();
     private ActivityProductDetailBinding binding;
+
     private int quantity = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +40,18 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         this.quantity = 0;
         binding.txtQuantity.setText("0");
+        binding.btnViewCart.setVisibility(View.GONE);
         binding.btnBackDetail.setOnClickListener(view -> finish());
-        binding.btnViewCart.setOnClickListener(view -> setViewCart());
+        binding.btnViewCart.setOnClickListener(this::setViewCart);
         binding.plus.setOnClickListener(this::setAddQuantity);
         binding.subtract.setOnClickListener(this::setSubtractQuantity);
+        binding.btnAddCart.setOnClickListener(this::setAddCart);
         setProduct();
     }
-    private void setViewCart() {
-        Intent intent = new Intent(getApplicationContext(), CartDetailActivity.class);
-        //CartDetail.cart = this.cart;
-        getApplicationContext().startActivity(intent);
+    private void setViewCart(View view) {
+        Intent intent = new Intent(view.getContext(), CartDetailActivity.class);
+        CartDetailActivity.cart = this.cart;
+        view.getContext().startActivity(intent);
         finish();
     }
     private void setAddQuantity(View view) {
@@ -76,8 +82,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                         setProductImage();
                         setProductTitle();
                         setProductDetail();
-                        //setProductStore(productDbHelper);
-                        //binding.svReview.setVisibility(View.GONE);
+                        //setProductStore();
+                        binding.svReview.setVisibility(View.GONE);
                     }
                 }
                 else
@@ -92,6 +98,13 @@ public class ProductDetailActivity extends AppCompatActivity {
 
 
     }
+    /*private void setProductStore() {
+        Store store = productDbHelper.getStore(this.product.getStoreId());
+        if (store != null) {
+            ((TextView) findViewById(R.id.productStore)).setText(store.getName());
+            ((TextView) findViewById(R.id.productStoreAddress)).setText(store.getAddress());
+        }
+    }*/
 
     private void setProductImage() {
         if (product.getImage() != null) {
@@ -111,4 +124,39 @@ public class ProductDetailActivity extends AppCompatActivity {
         else
             tvProductDetail.setText(product.getDetail());
     }
+    private void setAddCart(View view) {
+        if (this.quantity <= 0) {
+            Toast.makeText(this, "Số lượng sản phẩm tối thiểu là 1.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Cart cartNew = new Cart("642a5b4ece856f8266e96d74",this.product.getId(),this.quantity);
+        APIService.createService(ICartService.class).addCart(cartNew).enqueue(new Callback<Cart>() {
+            @Override
+            public void onResponse(Call<Cart> call, Response<Cart> response) {
+                if (!response.isSuccessful())
+                {
+                    Log.d("T", "Đã xảy ra lỗi khi thêm giỏ hàng.");
+                    Toast.makeText(getApplicationContext(), "Đã xảy ra lỗi khi thêm giỏ hàng.", Toast.LENGTH_SHORT).show();
+
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show();
+                     cart = response.body();
+                    binding.btnAddCart.setVisibility(View.GONE);
+                    binding.btnViewCart.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Cart> call, Throwable t) {
+                Log.d("T", "Lỗi hệ thống");
+            }
+        });
+
+        }
+        /*else {
+            Intent intent = new Intent(this, Login.class);
+            startActivity(intent);
+        }*/
+
 }

@@ -1,14 +1,32 @@
 package com.example.saharashop.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.saharashop.R;
+import com.example.saharashop.adapter.CartAdapter;
+import com.example.saharashop.api.APIService;
+import com.example.saharashop.api.ICartService;
+import com.example.saharashop.databinding.FragmentCartBinding;
+import com.example.saharashop.entity.Cart;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +39,9 @@ public class CartFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private View view;
+    List<Cart> unpaidCarts = new ArrayList<>();
+    private FragmentCartBinding binding;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -60,7 +81,64 @@ public class CartFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_cart, container, false);
+        binding = FragmentCartBinding.inflate(inflater, container, false);
+        this.view = binding.getRoot();
+        getUnpaidCart(view);
+        return this.view;
+    }
+    private void getCartByUserId(){
+        APIService.createService(ICartService.class).getCartByUserId("645a5b291dc553b58ce59a2b").enqueue(new Callback<List<Cart>>() {
+            @Override
+            public void onResponse(Call<List<Cart>> call, Response<List<Cart>> response) {
+                if (!response.isSuccessful())
+                {
+                    Toast.makeText(getContext(), "Đã xảy ra lỗi khi thêm giỏ hàng.", Toast.LENGTH_SHORT).show();
+                }
+                else  {
+                    unpaidCarts  = response.body();
+                    Log.d("Value",String.valueOf(unpaidCarts.size()));
+                    loadCart();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Cart>> call, Throwable t) {
+
+            }
+        });
+    }
+    private void loadCart()
+    {
+        if (unpaidCarts.size() > 0) {
+            CartAdapter adapter = new CartAdapter(getContext(),unpaidCarts);
+            RecyclerView rvCart = view.findViewById(R.id.rvCart);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            rvCart.setLayoutManager(layoutManager);
+            rvCart.setAdapter(adapter);
+            binding.noMoreCarts.setVisibility(View.GONE);
+            binding.cartList.setVisibility(View.VISIBLE);
+            rvCart.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+                @Override
+                public void onChildViewAttachedToWindow(@NonNull View view) {
+
+                }
+
+                @Override
+                public void onChildViewDetachedFromWindow(@NonNull View view) {
+                    if (adapter.getItemCount() == 0) {
+                        binding.noMoreCarts.setVisibility(View.VISIBLE);
+                        binding.cartList.setVisibility(View.GONE);
+                    }
+                }
+            });
+        } else {
+            binding.noMoreCarts.setVisibility(View.VISIBLE);
+            binding.cartList.setVisibility(View.GONE);
+        }
+    }
+    private void getUnpaidCart(View view) {
+
+        getCartByUserId();
+
     }
 }
