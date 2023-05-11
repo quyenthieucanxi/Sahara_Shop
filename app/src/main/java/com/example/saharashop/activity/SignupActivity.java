@@ -1,10 +1,16 @@
 package com.example.saharashop.activity;
 
+import static com.example.saharashop.untils.AppUtilities.SELECT_PICTURE;
+import static com.example.saharashop.untils.AppUtilities.TAKE_PICTURE;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
@@ -15,6 +21,9 @@ import com.example.saharashop.databinding.LoginBinding;
 import com.example.saharashop.databinding.SignupBinding;
 import com.example.saharashop.entity.Account1;
 import com.example.saharashop.entity.User;
+import com.example.saharashop.untils.AppUtilities;
+
+import org.jetbrains.annotations.NotNull;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,14 +38,57 @@ public class SignupActivity extends AppCompatActivity {
         binding = SignupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Context ctx = this;
+        binding.btnBack.setOnClickListener(view -> finish());
         binding.btnSignUp.setOnClickListener(view -> handleSignUp());
         binding.txtSignIn.setOnClickListener(view -> setLogIn());
+        binding.btnChoosePhoto.setOnClickListener(AppUtilities::setChoosePhoto);
+        setConfirmPassword();
+    }
+    private void setConfirmPassword() {
+        binding.txtConfirmPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                setConfirmPasswordErrorHelper();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                setConfirmPasswordErrorHelper();
+            }
+        });
+    }
+    private void setConfirmPasswordErrorHelper() {
+        String password = binding.txtPassword.getText().toString();
+        String confirmPassword = binding.txtConfirmPassword.getText().toString();
+
+        if (password.equals(confirmPassword))
+            binding.layoutConfirmPassword.setErrorEnabled(false);
+        else {
+            binding.layoutConfirmPassword.setErrorEnabled(true);
+            binding.layoutConfirmPassword.setError("Phải trùng với mật khẩu đã nhập.");
+        }
     }
     void setLogIn() {
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
         finish();
+    }
+    private boolean validate(@NotNull String fullName, String email, String phone, String address,
+                             String username, String password, String confirmPassword) {
+        if (fullName.equals("")) return false;
+        if (email.equals("")) return false;
+        if (phone.equals("")) return false;
+        if (address.equals("")) return false;
+        if (username.equals("")) return false;
+        if (password.equals("")) return false;
+        if (confirmPassword.equals("")) return false;
+        if (!password.equals(confirmPassword)) return false;
+        return password.length() >= 6;
     }
     private void handleSignUp() {
         String valueFullName = binding.txtFullName.getText().toString();
@@ -50,6 +102,10 @@ public class SignupActivity extends AppCompatActivity {
         String valueChipMale = binding.chipMale.getText().toString();
         String valueChipFemale = binding.chipFemale.getText().toString();
         String valueChipOthers = binding.chipOthers.getText().toString();
+        if (!validate(valueFullName, valueEmail, valuePhone, valueAddress, valueUsername, valuePassword, valueConfirmPassword)) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin cá nhân!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Account1 account = new Account1(valueUsername, valueEmail, valuePassword, "user", true);
 
@@ -78,7 +134,8 @@ public class SignupActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), "Đăng ký thất bại 22", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Đã xảy ra lỗi trong quá trình tạo tài khoản. Vui lòng tạo lại!",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -88,6 +145,26 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
     }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                // Get the url of the image from data
+                Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    // update the preview image in the layout
+                    binding.imgAvt.setImageURI(selectedImageUri);
+                }
+            } //else  (requestCode == TAKE_PICTURE) {
+                //setPic(imgAvt);
+            }
+        } //else if (resultCode == FirebaseActivity.CREATE_ACCOUNT_OK) {
+//            if (requestCode == FirebaseActivity.CREATE_ACCOUNT) {
+//                Toast.makeText(this, "Đã đăng ký thành công!", Toast.LENGTH_SHORT).show();
+//                finish();
+//            }
+        //}
+    }
 
 
-}
