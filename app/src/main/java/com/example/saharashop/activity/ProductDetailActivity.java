@@ -2,6 +2,7 @@ package com.example.saharashop.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +36,29 @@ public class ProductDetailActivity extends AppCompatActivity {
         binding.txtQuantity.setText("0");
         binding.btnViewCart.setVisibility(View.GONE);
         binding.btnBackDetail.setOnClickListener(view -> finish());
+        binding.btnViewCart.setOnClickListener(view -> setViewCart());
+        binding.plus.setOnClickListener(this::setAddQuantity);
+        binding.subtract.setOnClickListener(this::setSubtractQuantity);
         setProduct();
+    }
+    private void setViewCart() {
+        Intent intent = new Intent(getApplicationContext(), CartDetailActivity.class);
+        //CartDetail.cart = this.cart;
+        getApplicationContext().startActivity(intent);
+        finish();
+    }
+    private void setAddQuantity(View view) {
+        this.quantity += 1;
+        binding.txtQuantity.setText(String.valueOf(quantity));
+    }
+    private void setSubtractQuantity(View view) {
+        if (this.quantity <= 0) {
+            this.quantity = 0;
+            binding.txtQuantity.setText("0");
+        } else {
+            quantity -= 1;
+            binding.txtQuantity.setText(String.valueOf(quantity));
+        }
     }
     private void setProduct() {
         Bundle bundle = getIntent().getExtras();
