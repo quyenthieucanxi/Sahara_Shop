@@ -2,6 +2,7 @@ package com.example.saharashop.api;
 
 import com.example.saharashop.entity.Product;
 import com.example.saharashop.entity.ProductType;
+import com.example.saharashop.entity.Promo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface IProductType {
     @GET("productType/getAllProductTypes")
@@ -32,5 +34,8 @@ public interface IProductType {
 
     @GET("product/getProductById/{id}")
     Call<Product> getProductById(@Path("id") String Id_product);
+
+    @GET("promo/getTopPromos")
+    Call<List<Promo>> getTopPromos(@Query("limit") String limit);
 
 }

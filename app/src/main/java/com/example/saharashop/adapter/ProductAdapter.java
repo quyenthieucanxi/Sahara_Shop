@@ -1,6 +1,8 @@
 package com.example.saharashop.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
+import com.example.saharashop.activity.ProductDetailActivity;
 import com.example.saharashop.entity.Product;
 
 import java.util.List;
@@ -57,7 +60,8 @@ public class ProductAdapter extends BaseAdapter {
     }
 
     public String getItemId_v2(int position) {
-        return productList.get(position).getId();
+        Product product = productList.get(position);
+        return product.getId();
     }
 
     @Override

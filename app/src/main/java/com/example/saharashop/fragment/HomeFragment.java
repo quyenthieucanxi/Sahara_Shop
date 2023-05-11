@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +14,18 @@ import android.widget.Toast;
 
 import com.example.saharashop.R;
 import com.example.saharashop.activity.MainActivity;
+import com.example.saharashop.activity.ProductDetailActivity;
 import com.example.saharashop.activity.SearchActivity;
+import com.example.saharashop.adapter.ProductAdapter;
 import com.example.saharashop.adapter.ProductTypeAdapter;
 import com.example.saharashop.api.APIService;
+import com.example.saharashop.api.IAuthService;
 import com.example.saharashop.api.IProductType;
+import com.example.saharashop.entity.Product;
 import com.example.saharashop.entity.ProductType;
+import com.example.saharashop.entity.Promo;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -49,6 +55,9 @@ public class HomeFragment extends Fragment {
     private String mParam2;
 
     List<ProductType> productTypes = new ArrayList<>();
+    private Product productTemp = new Product();
+    List<Promo> promos = new ArrayList<>();
+    List<Product> promoProducts = new ArrayList<>();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -103,23 +112,10 @@ public class HomeFragment extends Fragment {
         });
 
         getAllProductTypes();
+        getPromoProducts("2");
 
         return view;
     }
-
-    private void setProductItem(View view){
-
-        ProductTypeAdapter productTypeAdapter = new ProductTypeAdapter(getContext(), productTypes);
-        GridView gv_product = view.findViewById(R.id.homeProduct);
-        gv_product.setOnItemClickListener((parent, view1, position, id) -> {
-            Intent intent = new Intent(this.getContext(), SearchActivity.class);
-            intent.putExtra(PRODUCT_TYPE_ID, productTypeAdapter.getItemId_v2(position));
-            startActivity(intent);
-        });
-        gv_product.setAdapter(productTypeAdapter);
-        Log.d("T", "Value: " + productTypes.size());
-    }
-
     private void getAllProductTypes(){
         APIService.createService(IProductType.class).getAllProductTypes().enqueue(new Callback<List<ProductType>>() {
             @Override
@@ -130,7 +126,7 @@ public class HomeFragment extends Fragment {
 
                 productTypes = response.body();
                 setProductItem(getView());
-                Log.d("T09", "Value: " + productTypes.size());
+                //Log.d("T09", "Value: " + productTypes.size());
 
             }
 
@@ -142,5 +138,91 @@ public class HomeFragment extends Fragment {
 
         });
     }
+
+    private void setProductItem(View view){
+
+        ProductTypeAdapter productTypeAdapter = new ProductTypeAdapter(getContext(), productTypes);
+        GridView gv_product = view.findViewById(R.id.homeProduct);
+        gv_product.setOnItemClickListener((parent, view1, position, id) -> {
+            Log.d("K",String.valueOf(promoProducts.size()));
+            Intent intent = new Intent(this.getContext(), SearchActivity.class);
+            intent.putExtra(PRODUCT_TYPE_ID, productTypeAdapter.getItemId_v2(position));
+            startActivity(intent);
+        });
+        gv_product.setAdapter(productTypeAdapter);
+
+        //Log.d("T", "Value: " + productTypes.size());
+    }
+    private void setPromoItem(@NotNull View view) {
+        ProductAdapter productAdapter = new ProductAdapter(getContext(), promoProducts);
+        GridView gv_promo = view.findViewById(R.id.homePromo);
+        gv_promo.setOnItemClickListener((parent, view1, position, id) -> {
+            Intent intent = new Intent(this.getContext(), ProductDetailActivity.class);
+            intent.putExtra("productId", productAdapter.getItemId_v2(position));
+            startActivity(intent);
+        });
+
+        gv_promo.setAdapter(productAdapter);
+    }
+    private  void getPromoProducts(String limit)
+    {
+
+        APIService.createService(IProductType.class).getTopPromos(limit).enqueue(new Callback<List<Promo>>() {
+            @Override
+            public void onResponse(Call<List<Promo>> call, Response<List<Promo>> response) {
+                if (!response.isSuccessful())
+                {
+                    Log.d("Q","Thất bại");
+                }
+                else {
+                    Log.d("Q","Ok");
+                    ArrayList<String> promoId = new ArrayList<>();
+                    promos = response.body();
+                    for (int i=0;i< promos.size();i++)
+                    {
+                        promoId.add(promos.get(i).getProductId());
+                    }
+
+                    for (int j =0 ; j< promoId.size();j++){
+                        getProductById(promoId.get(j));
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Promo>> call, Throwable t) {
+                Log.d("Q","Lỗi ");
+            }
+        });
+    }
+    private  void getProductById(String id)
+    {
+
+        APIService.createService(IProductType.class).getProductById(id).enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                if (response.isSuccessful()) {
+                     productTemp = new Product(response.body().getId(),response.body().getStoreId(), response.body().getTypeId(), response.body().getName(),
+                            response.body().getPrice(), response.body().getImage(), response.body().getDefaultImage(), response.body().getDetail(),
+                            response.body().getStar(), response.body().getState());
+                    Log.d("Q",productTemp.getName());
+                    promoProducts.add(productTemp);
+                    setPromoItem(getView());
+                }
+                else
+                    Log.d("T", "Sai dữ liệu");
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
+                Log.d("T", "Lỗi hệ thống");
+            }
+        });
+
+    }
+
+
 
 }

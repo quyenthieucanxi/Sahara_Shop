@@ -17,6 +17,8 @@ import com.example.saharashop.api.IProductType;
 import com.example.saharashop.databinding.ActivityProductDetailBinding;
 import com.example.saharashop.entity.Product;
 
+import org.jetbrains.annotations.NotNull;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,7 +36,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         this.quantity = 0;
         binding.txtQuantity.setText("0");
-        binding.btnViewCart.setVisibility(View.GONE);
         binding.btnBackDetail.setOnClickListener(view -> finish());
         binding.btnViewCart.setOnClickListener(view -> setViewCart());
         binding.plus.setOnClickListener(this::setAddQuantity);
@@ -67,7 +68,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {
                 if (response.isSuccessful()) {
-                    Product productTemp = new Product(response.body().getStoreId(), response.body().getTypeId(), response.body().getName(),
+                    Product productTemp = new Product(response.body().getId(),response.body().getStoreId(), response.body().getTypeId(), response.body().getName(),
                             response.body().getPrice(), response.body().getImage(), response.body().getDefaultImage(), response.body().getDetail(),
                             response.body().getStar(), response.body().getState());
                     product = productTemp;
@@ -76,7 +77,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                         setProductTitle();
                         setProductDetail();
                         //setProductStore(productDbHelper);
-                        binding.svReview.setVisibility(View.GONE);
+                        //binding.svReview.setVisibility(View.GONE);
                     }
                 }
                 else
@@ -101,6 +102,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         binding.productTitle.setText(product.getName());
         binding.productPrice.setText(String.valueOf(product.getPrice()));
     }
+
     private void setProductDetail() {
         String productDetail = product.getDetail();
         TextView tvProductDetail = findViewById(R.id.productDescription);
