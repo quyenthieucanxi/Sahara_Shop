@@ -130,7 +130,8 @@ public class Product {
     public  Product(){
 
     }
-    public Product(String storeId, String typeId, String name, long price, String image, int defaultImage, String detail, int star, Boolean state) {
+    public Product(String id,String storeId, String typeId, String name, long price, String image, int defaultImage, String detail, int star, Boolean state) {
+        this.id = id;
         this.storeId = storeId;
         this.typeId = typeId;
         this.name = name;
