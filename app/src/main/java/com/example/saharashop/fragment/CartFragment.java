@@ -91,7 +91,7 @@ public class CartFragment extends Fragment {
     }
     private void getCartByUserId(){
 
-        APIService.createService(ICartService.class).getCartByUserId(SharedPrefManager.getInstance(getContext()).getAccount().getId()).enqueue(new Callback<List<Cart>>() {
+        APIService.createService(ICartService.class).getCartByUserId(SharedPrefManager.getInstance(getContext()).getUser().getId()).enqueue(new Callback<List<Cart>>() {
             @Override
             public void onResponse(Call<List<Cart>> call, Response<List<Cart>> response) {
                 if (!response.isSuccessful())
@@ -100,7 +100,7 @@ public class CartFragment extends Fragment {
                 }
                 else  {
                     unpaidCarts  = response.body();
-                    List<Map<String, String>> _unpaidCarts = new ArrayList<>();
+                   /* List<Map<String, String>> _unpaidCarts = new ArrayList<>();
                     for (int i=0;i<unpaidCarts.size();i++)
                     {
                         _unpaidCarts.add(Map.of("productID",unpaidCarts.get(i).getProductId(),"quantity",String.valueOf(unpaidCarts.get(i).getQuantity())));
@@ -118,7 +118,7 @@ public class CartFragment extends Fragment {
                         {
                             unpaidCarts.get(i).setQuantity(Integer.parseInt(newUnpaidCarts.get(i).get("productID")));
                         }
-                    }
+                    }*/
 
                     loadCart();
                 }
