@@ -8,15 +8,19 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
 import com.example.saharashop.api.APIService;
 import com.example.saharashop.api.IProductType;
+import com.example.saharashop.api.IStore;
 import com.example.saharashop.databinding.ActivityCartDetailBinding;
 import com.example.saharashop.entity.Cart;
 import com.example.saharashop.entity.Product;
+import com.example.saharashop.entity.Store;
+import com.example.saharashop.untils.SharedPrefManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -54,6 +58,7 @@ public class CartDetailActivity extends AppCompatActivity {
                     binding.productPrice.setText(String.valueOf(product.getPrice()));
                     binding.cartPrice.setText(String.valueOf(cart.getQuantity()*product.getPrice()));
                     Glide.with(getApplicationContext()).load(product.getImage()).into(binding.productImage);
+                    getStoreByProductId(product);
                 }
                 else
                     Log.d("T", "Sai dữ liệu");
@@ -69,15 +74,34 @@ public class CartDetailActivity extends AppCompatActivity {
         setAddress();
         setQuantity();
 
-        /*if (store == null)
-            return;
-        binding.txtProductStore.setText(store.getName());
-        binding.txtProductStoreAddress.setText(store.getAddress());*/
+
+    }
+    private void getStoreByProductId(Product product)
+    {
+        APIService.createService(IStore.class).getStoreByProductId(product.getId()).enqueue(new Callback<Store>() {
+            @Override
+            public void onResponse(Call<Store> call, Response<Store> response) {
+                if (response.isSuccessful()) {
+                    Store store = response.body();
+                    if (store == null)
+                        return;
+                    binding.productStore.setText(store.getName());
+                    binding.productStoreAddress.setText(store.getAddress());
+                }
+                else
+                    Log.d("T", "Sai dữ liệu");
+            }
+
+            @Override
+            public void onFailure(Call<Store> call, Throwable t) {
+
+            }
+        });
     }
 
     private void setAddress() {
-        //String address = user.getAddress();
-        String address = "TP.HCM";
+
+        String address = SharedPrefManager.getInstance(getApplicationContext()).getUser().getAddress();
         if (address.length() > 0) {
             binding.txtDeliveryAddress.setText(address);
         }
