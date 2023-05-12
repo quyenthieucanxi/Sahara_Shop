@@ -13,10 +13,16 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
 import com.example.saharashop.api.APIService;
+import com.example.saharashop.api.IBillService;
+import com.example.saharashop.api.INotification;
 import com.example.saharashop.api.IProductType;
 import com.example.saharashop.databinding.ActivityCartDetailBinding;
+import com.example.saharashop.entity.Bill;
 import com.example.saharashop.entity.Cart;
+import com.example.saharashop.entity.Notification;
 import com.example.saharashop.entity.Product;
+import com.example.saharashop.entity.User;
+import com.example.saharashop.untils.SharedPrefManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +35,7 @@ public class CartDetailActivity extends AppCompatActivity {
     private Product product;
     private int quantity = 0;
     private ActivityCartDetailBinding binding;
+    private User user = SharedPrefManager.getInstance(this).getUser();
 
     
     @Override
@@ -41,7 +48,51 @@ public class CartDetailActivity extends AppCompatActivity {
         setCartInfo();
         binding.plus.setOnClickListener(this::setPlus);
         binding.subtract.setOnClickListener(this::setSubtract);
+        binding.btnOrder.setOnClickListener(this::Order);
     }
+
+    private void addNotification(){
+        Notification notification = new Notification(user.getId(), "đặt hàng thành công", true);
+        APIService.createService(INotification.class).add(notification).enqueue(new Callback<Notification>() {
+            @Override
+            public void onResponse(Call<Notification> call, Response<Notification> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Notification> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void addBill(){
+        Bill bill = new Bill(user.getId(), cart.getId(), user.getPhone(), user.getAddress(), product.getName(), quantity, product.getPrice());
+        APIService.createService(IBillService.class).add(bill).enqueue(new Callback<Bill>() {
+            @Override
+            public void onResponse(Call<Bill> call, Response<Bill> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(getApplicationContext(), "Thêm bill thành công", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<Bill> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void Order(View view) {
+        addNotification();
+        addBill();
+    }
+
     private void setCartInfo() {
         if (cart == null)
             return;

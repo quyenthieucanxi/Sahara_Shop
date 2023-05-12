@@ -3,12 +3,32 @@ package com.example.saharashop.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.saharashop.R;
+import com.example.saharashop.adapter.NotificationAdapter;
+import com.example.saharashop.adapter.RecyleItemViewAdapter;
+import com.example.saharashop.api.APIService;
+import com.example.saharashop.api.INotification;
+import com.example.saharashop.entity.MenuItem;
+import com.example.saharashop.entity.Notification;
+import com.example.saharashop.entity.User;
+import com.example.saharashop.untils.SharedPrefManager;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +45,8 @@ public class NotificationFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private List<Notification> lstNotifications = new ArrayList<>();
+    private User user = SharedPrefManager.getInstance(getContext()).getUser();
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -61,6 +83,38 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notification, container, false);
+        View view = inflater.inflate(R.layout.fragment_notification, container, false);
+
+        getNotification(view);
+
+        return view;
+    }
+
+    private void setNotification(@NotNull View view) {
+        NotificationAdapter adapter = new NotificationAdapter(lstNotifications);
+        RecyclerView rv_account = view.findViewById(R.id.rvNotifications);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rv_account.setLayoutManager(layoutManager);
+        rv_account.setAdapter(adapter);
+    }
+
+    public void getNotification(@NotNull View view){
+        APIService.createService(INotification.class).getAllNotificationsByUserId(user.getId()).enqueue(new Callback<List<Notification>>() {
+            @Override
+            public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(getContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                lstNotifications = response.body();
+                setNotification(view);
+                Toast.makeText(getContext(), "Lấy dữ liệu thông báo thành công", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<List<Notification>> call, Throwable t) {
+                Toast.makeText(getContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

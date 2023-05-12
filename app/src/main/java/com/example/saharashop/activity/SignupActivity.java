@@ -96,6 +96,12 @@ public class SignupActivity extends AppCompatActivity {
         String valueAddress = binding.txtAddress.getText().toString();
         String valuePhone = binding.txtPhone.getText().toString();
         String valueEmail = binding.txtEmail.getText().toString();
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(valueEmail).matches()) {
+            // Nếu email không đúng định dạng, hiển thị thông báo và focus vào ô email
+            binding.txtEmail.setError("Email không hợp lệ");
+            binding.txtEmail.requestFocus();
+            return;
+        }
         String valuePassword = binding.txtPassword.getText().toString();
         String valueConfirmPassword = binding.txtConfirmPassword.getText().toString();
 

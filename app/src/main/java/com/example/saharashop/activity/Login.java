@@ -87,6 +87,12 @@ public class Login  extends AppCompatActivity {
     @SuppressLint("NotConstructor")
     private void Login() {
         String email = binding.email.getText().toString().trim();
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            // Nếu email không đúng định dạng, hiển thị thông báo và focus vào ô email
+            binding.email.setError("Email không hợp lệ");
+            binding.email.requestFocus();
+            return;
+        }
         String password = binding.txtPassword.getText().toString().trim();
         Test user = new Test(email,password);
         APIService.createService(IAuthService.class).login(user).enqueue(new Callback<Account1>() {
@@ -98,8 +104,12 @@ public class Login  extends AppCompatActivity {
                         addUserToSharedPref(account1);
 
                         Toast.makeText(getApplicationContext(), "Đăng nhập thành công với", Toast.LENGTH_SHORT).show();
+
+
                         Intent intent = new Intent(Login.this, MainActivity.class);
                         startActivity(intent);
+
+
                     }
                     else
                         Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
