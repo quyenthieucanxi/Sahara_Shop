@@ -20,9 +20,12 @@ import com.example.saharashop.api.APIService;
 import com.example.saharashop.api.ICartService;
 import com.example.saharashop.databinding.FragmentCartBinding;
 import com.example.saharashop.entity.Cart;
+import com.example.saharashop.untils.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -87,16 +90,36 @@ public class CartFragment extends Fragment {
         return this.view;
     }
     private void getCartByUserId(){
-        APIService.createService(ICartService.class).getCartByUserId("645a5b291dc553b58ce59a2b").enqueue(new Callback<List<Cart>>() {
+
+        APIService.createService(ICartService.class).getCartByUserId(SharedPrefManager.getInstance(getContext()).getAccount().getId()).enqueue(new Callback<List<Cart>>() {
             @Override
             public void onResponse(Call<List<Cart>> call, Response<List<Cart>> response) {
                 if (!response.isSuccessful())
                 {
-                    Toast.makeText(getContext(), "Đã xảy ra lỗi khi thêm giỏ hàng.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Đã xảy ra lỗi khi load giỏ hàng.", Toast.LENGTH_SHORT).show();
                 }
                 else  {
                     unpaidCarts  = response.body();
-                    Log.d("Value",String.valueOf(unpaidCarts.size()));
+                    List<Map<String, String>> _unpaidCarts = new ArrayList<>();
+                    for (int i=0;i<unpaidCarts.size();i++)
+                    {
+                        _unpaidCarts.add(Map.of("productID",unpaidCarts.get(i).getProductId(),"quantity",String.valueOf(unpaidCarts.get(i).getQuantity())));
+
+                    }
+                    List<Map<String, String>> newUnpaidCarts= _unpaidCarts.stream()
+                            .collect(Collectors.groupingBy(
+                                    cart -> cart.get("productID"),
+                                    Collectors.summingInt(cart -> Integer.parseInt(cart.get("quantity")))))
+                            .entrySet().stream()
+                            .map(entry -> Map.of("productID", entry.getKey(), "quantity", Integer.toString(entry.getValue())))
+                            .collect(Collectors.toList());
+                    for (int i=0;i<unpaidCarts.size();i++) {
+                        if (unpaidCarts.get(i).getProductId() == newUnpaidCarts.get(i).get("productID"))
+                        {
+                            unpaidCarts.get(i).setQuantity(Integer.parseInt(newUnpaidCarts.get(i).get("productID")));
+                        }
+                    }
+
                     loadCart();
                 }
             }
