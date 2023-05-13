@@ -130,7 +130,7 @@ public class CartFragment extends Fragment {
             }
         });
     }
-    private void loadCart()
+    private  void loadCart()
     {
         if (unpaidCarts.size() > 0) {
             CartAdapter adapter = new CartAdapter(getContext(),unpaidCarts);

@@ -1,13 +1,13 @@
 package com.example.saharashop.entity;
 
 public class Discount {
-    private Integer id;
-    private Integer productId;
+    private String id;
+    private String productId;
     private String expirationDate;
     private Float value;
     private String status;
 
-    public Discount(Integer id, Integer productId, String expirationDate, Float value, String status) {
+    public Discount(String id, String productId, String expirationDate, Float value, String status) {
         this.id = id;
         this.productId = productId;
         this.value = value;
@@ -15,27 +15,19 @@ public class Discount {
         this.status = status;
     }
 
-    public Discount(Integer id, Integer productId, String expirationDate) {
-        this(id, productId, expirationDate, null, null);
-    }
-
-    public Discount(Integer productId, String expirationDate) {
-        this(-1, productId, expirationDate, null, null);
-    }
-
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

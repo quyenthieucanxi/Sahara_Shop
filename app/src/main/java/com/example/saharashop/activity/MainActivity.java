@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import com.example.saharashop.fragment.NotificationFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
+    public static final int FRAME_CONTAINER_ID = R.id.frame_container;
     public static Resources mainResources;
     @SuppressLint("NonConstantResourceId")
     private final BottomNavigationView.OnNavigationItemSelectedListener
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
             navigationView.setSelectedItemId(R.id.menuHome);
         }
         mainResources = getResources();
-        //AccountSessionManager.checkLogin(this);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
