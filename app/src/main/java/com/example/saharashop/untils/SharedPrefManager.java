@@ -47,12 +47,12 @@ public class SharedPrefManager {
         editor.putString(KEY_PHONE, user.getPhone());
         editor.putString(KEY_ADDRESS, user.getAddress());
         editor.putString(KEY_AVATAR, user.getAvatar());
-        editor.putBoolean(KEY_STATEUSER, user.getState());
+        editor.putBoolean(KEY_STATEUSER, user.getState()==null?true:user.getState());
         editor.putString(KEY_USERNAME, account1.getUsername());
         editor.putString(KEY_EMAIL, account1.getEmail());
         editor.putString(KEY_PASSWORD, account1.getPassword());
         editor.putString(KEY_ROLEID, account1.getRoleID());
-        editor.putBoolean(KEY_STATEACCOUNT, account1.getState());
+        editor.putBoolean(KEY_STATEACCOUNT, account1.getState()==null?true:account1.getState());
         editor.apply();
     }
 

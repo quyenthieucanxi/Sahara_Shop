@@ -59,11 +59,16 @@ public class AccountInfoActivity extends AppCompatActivity {
         binding.btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("aaaaaaaaaaaaaa", "aaaaaaaa");
                 handleUpdate();
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     private String getRealPathFromURI(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
         CursorLoader loader = new CursorLoader(getApplicationContext(), uri, projection, null, null, null);
@@ -75,7 +80,7 @@ public class AccountInfoActivity extends AppCompatActivity {
         return result;
     }
 
-    private void updateAccount(String idAccout, Account1 newAccount){
+    private void updateAccount(String idAccout, Account1 newAccount, User newUser){
         APIService.createService(IUserService.class).updateAccount(idAccout, newAccount).enqueue(new Callback<Account1>() {
             @Override
             public void onResponse(Call<Account1> call, Response<Account1> response) {
@@ -83,7 +88,12 @@ public class AccountInfoActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Lỗi hệ thống 3", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                Account1 shareRefAcc = new Account1(account1.getUsername(), newAccount.getEmail(), account1.getPassword(), account1.getRoleID(), account1.getState());
+
+                SharedPrefManager.getInstance(getApplicationContext()).userLogin(newUser, shareRefAcc);
                 Toast.makeText(getApplicationContext(), "Cập nhật account thành công", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
 
             @Override
@@ -103,7 +113,10 @@ public class AccountInfoActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Lỗi hệ thống 1", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                updateAccount(account1.getId(), newAccount);
+
+                User shareRefUser = new User(idUser, user.getAccountId(), newUser.getFullname(), user.getSex(), newUser.getPhone(), newUser.getAddress(), user.getAvatar(), user.getState());
+
+                updateAccount(account1.getId(), newAccount, shareRefUser);
                 Toast.makeText(getApplicationContext(), "Cập nhật user thành công", Toast.LENGTH_SHORT).show();
 
             }

@@ -3,6 +3,7 @@ package com.example.saharashop.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -58,7 +59,7 @@ public class CartDetailActivity extends AppCompatActivity {
     }
 
     private void addNotification(){
-        Notification notification = new Notification(user.getId(), "đặt hàng thành công", true);
+        Notification notification = new Notification(user.getId(), "Bạn đã đặt "+quantity+" " + product.getName()+" thành công!", true);
         APIService.createService(INotification.class).add(notification).enqueue(new Callback<Notification>() {
             @Override
             public void onResponse(Call<Notification> call, Response<Notification> response) {
@@ -95,8 +96,16 @@ public class CartDetailActivity extends AppCompatActivity {
     }
 
     private void Order(View view) {
-        addNotification();
-        addBill();
+        try {
+            addNotification();
+            addBill();
+            Intent intent = new Intent(CartDetailActivity.this, BillHistoryActivity.class);
+            startActivity(intent);
+        }
+        catch (Exception e){
+            Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void setCartInfo() {

@@ -90,6 +90,62 @@ public class SignupActivity extends AppCompatActivity {
         if (!password.equals(confirmPassword)) return false;
         return password.length() >= 6;
     }
+
+    @NotNull
+    private String getSex() {
+        int selected = binding.chipGroupSex.getCheckedChipId();
+        switch (selected) {
+            case R.id.chipMale:
+                return "Male";
+            case R.id.chipFemale:
+                return "Female";
+            default:
+                return "Orther";
+        }
+    }
+
+    private void addUser(User user){
+        APIService.createService(IAuthService.class).addUser(user).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(getApplicationContext(), "Đăng ký thất bại 2", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(getApplicationContext(), "Đăng ký thành công: " + response.body().getAccountId(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SignupActivity.this, Login.class);
+                startActivity(intent);
+            }
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Đã xảy ra lỗi trong quá trình tạo tài khoản. Vui lòng tạo lại!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void addAccount(Account1 account1, String valueFullName, String valuePhone, String valueAddress, String valueConfirmPassword){
+        APIService.createService(IAuthService.class).signUp(account1).enqueue(new Callback<Account1>() {
+            String valueAccountId;
+            @Override
+            public void onResponse(Call<Account1> call, Response<Account1> response) {
+                if (response.code() != 200) {
+                    Toast.makeText(getApplicationContext(), "Đăng ký thất bại 1", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                valueAccountId = response.body().getId();
+                Toast.makeText(getApplicationContext(), "Tạo tài khoản thành công thành công: " + response.body().getId(), Toast.LENGTH_SHORT).show();
+
+                User user = new User(valueAccountId, valueFullName, getSex(), valuePhone, valueAddress, valueConfirmPassword, true);
+                addUser(user);
+            }
+            @Override
+            public void onFailure(Call<Account1> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Đăng ký thất bại 11", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void handleSignUp() {
         String valueFullName = binding.txtFullName.getText().toString();
         String valueUsername = binding.txtUsername.getText().toString();
@@ -105,51 +161,14 @@ public class SignupActivity extends AppCompatActivity {
         String valuePassword = binding.txtPassword.getText().toString();
         String valueConfirmPassword = binding.txtConfirmPassword.getText().toString();
 
-        String valueChipMale = binding.chipMale.getText().toString();
-        String valueChipFemale = binding.chipFemale.getText().toString();
-        String valueChipOthers = binding.chipOthers.getText().toString();
         if (!validate(valueFullName, valueEmail, valuePhone, valueAddress, valueUsername, valuePassword, valueConfirmPassword)) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin cá nhân!", Toast.LENGTH_SHORT).show();
             return;
         }
-
         Account1 account = new Account1(valueUsername, valueEmail, valuePassword, "user", true);
 
-        APIService.createService(IAuthService.class).signUp(account).enqueue(new Callback<Account1>() {
-            String valueAccountId;
-            @Override
-            public void onResponse(Call<Account1> call, Response<Account1> response) {
-                if (response.code() != 200) {
-                    Toast.makeText(getApplicationContext(), "Đăng ký thất bại 1", Toast.LENGTH_SHORT).show();
+        addAccount(account, valueFullName, valuePhone, valueAddress, valueConfirmPassword);
 
-                    return;
-                }
-                valueAccountId = response.body().getId();
-                Toast.makeText(getApplicationContext(), "Tạo tài khoản thành công thành công: " + response.body().getId(), Toast.LENGTH_SHORT).show();
-
-                User user = new User(valueAccountId, valueFullName, valueChipMale, valuePhone, valueAddress, valueConfirmPassword, true);
-
-                APIService.createService(IAuthService.class).addUser(user).enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                        if (response.code() != 200) {
-                            Toast.makeText(getApplicationContext(), "Đăng ký thất bại 2", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        Toast.makeText(getApplicationContext(), "Đăng ký thành công: " + response.body().getAccountId(), Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), "Đã xảy ra lỗi trong quá trình tạo tài khoản. Vui lòng tạo lại!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-            @Override
-            public void onFailure(Call<Account1> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Đăng ký thất bại 11", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

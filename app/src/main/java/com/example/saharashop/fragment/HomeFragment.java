@@ -111,21 +111,20 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        getAllProductTypes();
+        getAllProductTypes(view);
         getPromoProducts("2");
 
         return view;
     }
-    private void getAllProductTypes(){
+    private void getAllProductTypes(View view){
         APIService.createService(IProductType.class).getAllProductTypes().enqueue(new Callback<List<ProductType>>() {
             @Override
             public void onResponse(Call<List<ProductType>> call, Response<List<ProductType>> response) {
                 if(response.code() != 200){
                     return;
                 }
-
                 productTypes = response.body();
-                setProductItem(getView());
+                setProductItem(view);
                 //Log.d("T09", "Value: " + productTypes.size());
 
             }
@@ -186,8 +185,6 @@ public class HomeFragment extends Fragment {
                     for (int j =0 ; j< promoId.size();j++){
                         getProductById(promoId.get(j));
                     }
-
-
                 }
             }
 
