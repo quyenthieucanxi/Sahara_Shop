@@ -1,22 +1,29 @@
 package com.example.saharashop.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.saharashop.R;
+import com.example.saharashop.activity.ProductDetailActivity;
 import com.example.saharashop.adapter.ProductAdapter;
 import com.example.saharashop.api.APIService;
+import com.example.saharashop.api.IDiscount;
 import com.example.saharashop.api.IProductType;
 import com.example.saharashop.databinding.FragmentCartBinding;
 import com.example.saharashop.databinding.FragmentDiscountBinding;
 import com.example.saharashop.entity.Product;
 import com.example.saharashop.entity.Promo;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +48,7 @@ public class DiscountFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private View view;
+    private List<Product> products = new ArrayList<>();
     private FragmentDiscountBinding binding;
     List<Product> productList = new ArrayList<>();
     public DiscountFragment() {
@@ -81,7 +89,8 @@ public class DiscountFragment extends Fragment {
         this.view = binding.getRoot();
         // Inflate the layout for this fragment
         getPromoProducts("2");
-
+        binding.layoutSearchDiscount.setVisibility(View.GONE);
+        getSearchResult();
         return view;
     }
 
@@ -120,7 +129,6 @@ public class DiscountFragment extends Fragment {
     }
     private  void getProductById(String id)
     {
-
         APIService.createService(IProductType.class).getProductById(id).enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {
@@ -136,13 +144,65 @@ public class DiscountFragment extends Fragment {
                 else
                     Log.d("T", "Sai dữ liệu");
             }
-
             @Override
             public void onFailure(Call<Product> call, Throwable t) {
                 Log.d("T", "Lỗi hệ thống");
             }
         });
+    }
+    private  void getDiscountProductByName(String txtSearch)
+    {
+        APIService.createService(IDiscount.class).getDiscountProductByName(txtSearch).enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                if (!response.isSuccessful())
+                {
+                    Toast.makeText(getContext(), "Tìm kiếm thất bại", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    products= response.body();
+                    if (products != null) {
+                        setSearchResult(products);
+                        binding.layoutSponsor.setVisibility(View.GONE);
+                    } else
+                        binding.layoutSearchDiscount.setVisibility(View.GONE);
 
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+
+            }
+        });
+    }
+    private void getSearchResult() {
+        binding.txtSearchDiscount.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //ArrayList<Product> products = productDbHelper.getDiscountProductByName(binding.txtSearchDiscount.getQuery().toString());
+                getDiscountProductByName(binding.txtSearchDiscount.getQuery().toString());
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+    }
+    private void setSearchResult(@NotNull List<Product> products) {
+        binding.layoutSearchDiscount.setVisibility(View.VISIBLE);
+        binding.tvNumDiscount.setText(String.valueOf(products.size()));
+        ProductAdapter adapter = new ProductAdapter(getContext(), products);
+        binding.gvSearchResult.setOnItemClickListener((parent, view1, position, id) -> {
+            Intent intent = new Intent(getContext(), ProductDetailActivity.class);
+            intent.putExtra(ProductDetailActivity.PRODUCT_ID, adapter.getItemId(position));
+            startActivity(intent);
+        });
+        binding.gvSearchResult.setAdapter(adapter);
     }
 }
 
