@@ -42,6 +42,7 @@ public class BillHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bill_history);
 
         rv_billHistory = findViewById(R.id.rvBillHistory);
+
         btnBack = findViewById(R.id.btnBack);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -50,7 +51,7 @@ public class BillHistoryActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
+        findViewById(R.id.btnBack).setOnClickListener(view -> finish());
         getBillHistory();
     }
 
@@ -76,7 +77,9 @@ public class BillHistoryActivity extends AppCompatActivity {
                 }
                 lstBill = response.body();
                 setBillHistory();
-                Toast.makeText(getApplicationContext(), "Lấy dữ liệu lịch sử hóa đơn thành công", Toast.LENGTH_SHORT).show();
+                findViewById(R.id.rvBillHistory).setVisibility(View.VISIBLE);
+                findViewById(R.id.noMoreBills).setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), "Lấy dữ liệu lịch sử hóa đơn thành công!", Toast.LENGTH_SHORT).show();
             }
 
             @Override

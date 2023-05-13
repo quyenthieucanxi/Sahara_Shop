@@ -1,14 +1,20 @@
 package com.example.saharashop.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
+
+import android.app.Fragment;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
 import com.example.saharashop.api.APIService;
 import com.example.saharashop.api.IBillService;
+import com.example.saharashop.api.ICartService;
 import com.example.saharashop.api.INotification;
 import com.example.saharashop.api.IProductType;
 import com.example.saharashop.api.IStore;
@@ -29,6 +36,7 @@ import com.example.saharashop.entity.User;
 
 import com.example.saharashop.entity.Store;
 
+import com.example.saharashop.fragment.CartFragment;
 import com.example.saharashop.untils.SharedPrefManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +50,7 @@ public class CartDetailActivity extends AppCompatActivity {
     private Product product;
     private int quantity = 0;
     private ActivityCartDetailBinding binding;
+    private CartFragment cartFragment = new CartFragment();
     private User user = SharedPrefManager.getInstance(this).getUser();
 
     
@@ -55,7 +64,10 @@ public class CartDetailActivity extends AppCompatActivity {
         setCartInfo();
         binding.plus.setOnClickListener(this::setPlus);
         binding.subtract.setOnClickListener(this::setSubtract);
+        binding.btnCancelOrder.setOnClickListener(this::setCancelOrder);
         binding.btnOrder.setOnClickListener(this::Order);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra("frame_container_id", MainActivity.FRAME_CONTAINER_ID);
     }
 
     private void addNotification(){
@@ -85,7 +97,7 @@ public class CartDetailActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(getApplicationContext(), "Thêm bill thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Thêm bill thành công!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -107,7 +119,34 @@ public class CartDetailActivity extends AppCompatActivity {
         }
 
     }
+    private void setCancelOrder(@NotNull View view) {
+        APIService.createService(ICartService.class).delete(cart.getId()).enqueue(new Callback<Cart>() {
+            @Override
+            public void onResponse(Call<Cart> call, Response<Cart> response) {
+                if (!response.isSuccessful())
+                {
+                    Toast.makeText(getApplicationContext(), "Cancel thất bại", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(view.getContext(), "Đã xóa khỏi giỏ hàng.", Toast.LENGTH_SHORT).show();
+                    finish();
+                    /*
+                    int frameContainerId = getIntent().getIntExtra("frame_container_id", -1);
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(frameContainerId, cartFragment);
+                    transaction.commit();*/
+                }
+            }
 
+            @Override
+            public void onFailure(Call<Cart> call, Throwable t) {
+                Toast.makeText(CartDetailActivity.this, "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
     private void setCartInfo() {
         if (cart == null)
             return;
@@ -131,12 +170,8 @@ public class CartDetailActivity extends AppCompatActivity {
                 Log.d("T", "Lỗi hệ thống");
             }
         });
-
-
         setAddress();
         setQuantity();
-
-
     }
     private void getStoreByProductId(Product product)
     {
@@ -153,10 +188,8 @@ public class CartDetailActivity extends AppCompatActivity {
                 else
                     Log.d("T", "Sai dữ liệu");
             }
-
             @Override
             public void onFailure(Call<Store> call, Throwable t) {
-
             }
         });
     }
@@ -178,14 +211,12 @@ public class CartDetailActivity extends AppCompatActivity {
                 if (binding.txtQuantity.getText().equals("0"))
                     binding.txtQuantity.setText("");
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (binding.txtQuantity.getText().length() <= 0)
                     binding.txtQuantity.setText("0");
                 calcPrice();
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
                 quantity = Integer.parseInt(binding.txtQuantity.getText().toString());

@@ -150,7 +150,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             return;
         }
 
-        Cart cartNew = new Cart(SharedPrefManager.getInstance(getApplicationContext()).getAccount().getId(),this.product.getId(),this.quantity);
+        Cart cartNew = new Cart(SharedPrefManager.getInstance(getApplicationContext()).getUser().getId(),this.product.getId(),this.quantity);
         APIService.createService(ICartService.class).addCart(cartNew).enqueue(new Callback<Cart>() {
             @Override
             public void onResponse(Call<Cart> call, Response<Cart> response) {
