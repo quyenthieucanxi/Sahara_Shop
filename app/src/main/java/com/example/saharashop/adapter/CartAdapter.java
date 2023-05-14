@@ -61,7 +61,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                     Glide.with(context).load(response.body().getImage()).into(holder.cartImage);
                     holder.cartTitle.setText(response.body().getName());
                     holder.cartQuantity.setText(String.valueOf(cart.getQuantity()));
-                    String status = cart.getStatus() == "Paid" ? "Đã thanh toán" : "Chưa thanh toán";
+                    String status = cart.getStatus().equals("Paid")  ? "Đã thanh toán" : "Chưa thanh toán";
                     holder.cartStatus.setText(status);
                 }
                 else {
