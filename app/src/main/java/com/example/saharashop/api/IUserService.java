@@ -18,4 +18,7 @@ public interface IUserService {
 
     @PUT("account/update/{idAccount}")
     Call<Account1> updateAccount(@Path("idAccount") String idAccount, @Body Account1 account1);
+
+    @GET("account/getAccountByEmail/{email}")
+    Call<Account1> getAccountByEmail(@Path("email") String email);
 }

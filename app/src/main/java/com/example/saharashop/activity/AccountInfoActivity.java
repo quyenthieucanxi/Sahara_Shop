@@ -10,16 +10,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.content.CursorLoader;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
 import com.example.saharashop.api.APIService;
 import com.example.saharashop.api.IUserService;
@@ -31,6 +37,7 @@ import com.example.saharashop.untils.RealPathUtil;
 import com.example.saharashop.untils.SharedPrefManager;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.IOException;
 
 import okhttp3.MediaType;
@@ -69,16 +76,6 @@ public class AccountInfoActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    private String getRealPathFromURI(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        CursorLoader loader = new CursorLoader(getApplicationContext(), uri, projection, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_idx = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String result = cursor.getString(column_idx);
-        cursor.close();
-        return result;
-    }
 
     private void updateAccount(String idAccout, Account1 newAccount, User newUser){
         APIService.createService(IUserService.class).updateAccount(idAccout, newAccount).enqueue(new Callback<Account1>() {
@@ -133,30 +130,28 @@ public class AccountInfoActivity extends AppCompatActivity {
         String fullname = binding.txtFullName.getText().toString().trim();
         String address = binding.txtAddress.getText().toString().trim();
         String phone = binding.txtPhone.getText().toString().trim();
-        User newUser = new User(fullname, phone, address, "abc");
+        User newUser = new User(fullname, phone, address, mUri.toString());
         updateUser(user.getId(), newUser);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode == SELECT_PICTURE) {
-                // Get the url of the image from data
-                Uri selectedImageUri = data.getData();
-                mUri = selectedImageUri;
-                if (null != selectedImageUri) {
-                    // update the preview image in the layout
-                    binding.imgAvt.setImageURI(selectedImageUri);
-                }
+        if (requestCode == AppUtilities.REQUEST_CODE_OPEN_DOCUMENT && resultCode == RESULT_OK && data != null) {
+            Uri uri = data.getData();
+            mUri = uri;
+            if (uri != null) {
+                binding.imgAvt.setImageURI(uri);
             }
-            }
+        }
     }
+
 
     private void setAccountInfor(){
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
-            //binding.menuAvatar.setImageBitmap(user.getAvatar());
+            if (mUri != null) {
+                Glide.with(getApplicationContext()).load(mUri).into(binding.imgAvt);
+            }
             binding.txtFullName.setText(user.getFullname());
             binding.txtAddress.setText(user.getAddress());
             binding.txtEmail.setText(account1.getEmail());
