@@ -111,7 +111,7 @@ public class CartDetailActivity extends AppCompatActivity {
         try {
             addNotification();
             addBill();
-            Intent intent = new Intent(CartDetailActivity.this, BillHistoryActivity.class);
+            Intent intent = new Intent(CartDetailActivity.this, MainActivity.class);
             startActivity(intent);
         }
         catch (Exception e){

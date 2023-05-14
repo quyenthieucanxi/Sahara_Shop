@@ -100,6 +100,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
                 }
             });
+
+
         }
     }
 
