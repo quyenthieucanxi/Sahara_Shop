@@ -211,8 +211,6 @@ public class SearchActivity extends AppCompatActivity {
         } else {
             selectedProductTypes.clear();
         }
-//        ProductDbHelper productDbHelper = new ProductDbHelper(this);
-//        ArrayList<Product> products = productDbHelper.getFullSearchResult(txtSearch);
         getSearchResult();
 
     }
@@ -259,6 +257,11 @@ public class SearchActivity extends AppCompatActivity {
     private void getSearchResult() {
         if (this.txtSearch == null)
             return;
+        getProductByNameSearch(txtSearch);
+
+    }
+    private void getProductByTypeName()
+    {
         Map<String, String> txtSearchRq = new HashMap<>();
         txtSearchRq.put("typeName", txtSearch);
         APIService.createService(IProductType.class).getProductByTypeName(txtSearchRq).enqueue(new Callback<List<Product>>() {
@@ -269,9 +272,10 @@ public class SearchActivity extends AppCompatActivity {
                     return;
                 }
                 ListproductsBySearch = response.body();
-                if (products == null)
+                if (ListproductsBySearch == null)
                     return;
                 setProductsOnGridView(ListproductsBySearch);
+
             }
 
             @Override
@@ -279,7 +283,27 @@ public class SearchActivity extends AppCompatActivity {
                 Log.d("T", "Thất bại!");
             }
         });
+    }
+    private void getProductByNameSearch(String txtSearch)
+    {
+        APIService.createService(IProductType.class).getProductByNameSearch(txtSearch).enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                if(!response.isSuccessful()){
+                    Log.d("T", "Thất bại search by name!");
+                    return;
+                }
+                ListproductsBySearch = response.body();
+                if (ListproductsBySearch == null)
+                    return;
+                setProductsOnGridView(ListproductsBySearch);
+            }
 
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+
+            }
+        });
     }
 
 
