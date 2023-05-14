@@ -41,6 +41,9 @@ import com.example.saharashop.untils.SharedPrefManager;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -97,7 +100,10 @@ public class CartDetailActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("state","Paid");
                 Toast.makeText(getApplicationContext(), "Thêm bill thành công!", Toast.LENGTH_SHORT).show();
+                updateStateCard(bill.getCartId(),map);
             }
 
             @Override
@@ -106,9 +112,29 @@ public class CartDetailActivity extends AppCompatActivity {
             }
         });
     }
+    private void updateStateCard(String idCard,Map<String,String> state){
+        APIService.createService(ICartService.class).updateState(idCard,state).enqueue(new Callback<Cart>() {
+            @Override
+            public void onResponse(Call<Cart> call, Response<Cart> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), "Thay đổi state thất bại", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(getApplicationContext(), "Thay đổi state thành công", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFailure(Call<Cart> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void Order(View view) {
         try {
+            if (quantity == 0)
+                return;
             addNotification();
             addBill();
             Intent intent = new Intent(CartDetailActivity.this, MainActivity.class);
