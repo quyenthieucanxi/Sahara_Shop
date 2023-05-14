@@ -158,43 +158,5 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!--<TextView
-        android:id="@+id/textView4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="@string/txtLoginWith"
-        android:textSize="16dp"
-        android:textStyle="bold" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.15">
-        <ImageButton
-            android:id="@+id/btnFacebook"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#00ffffff"
-            android:elevation="5dp"
-            android:src="@drawable/facebook" />
-        <ImageButton
-            android:id="@+id/btnGoogle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#00ffffff"
-            android:elevation="5dp"
-            android:src="@drawable/google" />
-        <ImageButton
-            android:id="@+id/btnZalo"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#00ffffff"
-            android:elevation="5dp"
-            android:src="@drawable/zalo" />
-    </LinearLayout> -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

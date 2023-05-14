@@ -13,9 +13,6 @@ public interface IAuthService {
 
     @POST("account/login")
     Call<Account1> login(@Body Test test);
-    /*@FormUrlEncoded
-    Call<Resp> login(@Field("username") String username,
-                     @Field("password") String password);*/
     @POST("account/sign-up")
     Call<Account1> signUp(@Body Account1 account);
     @POST("user/addUser")
