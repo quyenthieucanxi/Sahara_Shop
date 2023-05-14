@@ -23,6 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
         binding= ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         //binding.menuEmailVerified.setOnClickListener(this::setCheckAccountVerified);
+        binding.menuEmailVerified.setVisibility(View.GONE);
         binding.menuLogin.setVisibility(View.GONE);
         binding.menuForgotPassword.setVisibility(View.GONE);
         binding.btnBack.setOnClickListener(view -> finish());

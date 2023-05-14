@@ -88,7 +88,7 @@ public class DiscountFragment extends Fragment {
         binding = FragmentDiscountBinding.inflate(inflater, container, false);
         this.view = binding.getRoot();
         // Inflate the layout for this fragment
-        getPromoProducts("2");
+        getPromoProducts("4");
         binding.layoutSearchDiscount.setVisibility(View.GONE);
         getSearchResult();
         return view;

@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment {
         });
 
         getAllProductTypes(view);
-        getPromoProducts("2");
+        getPromoProducts("4");
 
         return view;
     }
@@ -125,16 +125,11 @@ public class HomeFragment extends Fragment {
                 }
                 productTypes = response.body();
                 setProductItem(view);
-                //Log.d("T09", "Value: " + productTypes.size());
-
             }
-
             @Override
             public void onFailure(Call<List<ProductType>> call, Throwable t) {
 
             }
-
-
         });
     }
 

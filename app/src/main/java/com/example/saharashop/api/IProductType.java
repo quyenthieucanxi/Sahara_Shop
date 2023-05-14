@@ -38,4 +38,7 @@ public interface IProductType {
     @GET("promo/getTopPromos")
     Call<List<Promo>> getTopPromos(@Query("limit") String limit);
 
+    @GET("/product/search")
+    Call<List<Product>> getProductByNameSearch(@Query("search") String nameSearch);
+
 }
