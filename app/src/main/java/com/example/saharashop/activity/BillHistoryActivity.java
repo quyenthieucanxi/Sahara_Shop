@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.saharashop.R;
@@ -32,6 +33,7 @@ import retrofit2.Response;
 public class BillHistoryActivity extends AppCompatActivity {
     private List<Bill> lstBill = new ArrayList<>();
     private RecyclerView rv_billHistory;
+    private ImageButton btnBack;
     private User user = SharedPrefManager.getInstance(this).getUser();
 
     @Override
@@ -40,8 +42,22 @@ public class BillHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bill_history);
 
         rv_billHistory = findViewById(R.id.rvBillHistory);
+
+        btnBack = findViewById(R.id.btnBack);
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         findViewById(R.id.btnBack).setOnClickListener(view -> finish());
         getBillHistory();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     private void setBillHistory() {
@@ -63,7 +79,7 @@ public class BillHistoryActivity extends AppCompatActivity {
                 setBillHistory();
                 findViewById(R.id.rvBillHistory).setVisibility(View.VISIBLE);
                 findViewById(R.id.noMoreBills).setVisibility(View.GONE);
-                Toast.makeText(getApplicationContext(), "Lấy dữ liệu lịch sử hóa đơn thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Lấy dữ liệu lịch sử hóa đơn thành công!", Toast.LENGTH_SHORT).show();
             }
 
             @Override

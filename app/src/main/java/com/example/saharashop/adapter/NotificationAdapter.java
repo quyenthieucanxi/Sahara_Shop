@@ -42,11 +42,11 @@ import retrofit2.Response;
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
     private List<Notification> lstNotification;
-    private String notficationId;
-    private NotificationFragment nf;
+    private AdapterCallback mAdapterCallback;
 
-    public NotificationAdapter(List<Notification> lstNotification) {
+    public NotificationAdapter(List<Notification> lstNotification, AdapterCallback adapterCallback) {
         this.lstNotification = lstNotification;
+        mAdapterCallback = adapterCallback;
     }
 
     public List<Notification> getLstNotification() {
@@ -70,7 +70,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull NotificationAdapter.ViewHolder holder, int position) {
-        Notification notification = getLstNotification().get(position);
+        Notification notification = lstNotification.get(position);
         holder.notify_detail.setText(notification.getMessage());
         holder.id = notification.getId();
     }
@@ -100,12 +100,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
                 }
             });
-
-
         }
-
     }
-
 
     private void handleDismiss(String id, View view) {
         APIService.createService(INotification.class).update(id).enqueue(new Callback<Notification>() {
@@ -115,7 +111,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     Toast.makeText(view.getContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
+                mAdapterCallback.onMethodCallback();
                 Toast.makeText(view.getContext(), "Thành công", Toast.LENGTH_SHORT).show();
 
             }
@@ -126,4 +122,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
         });
     }
+
+    public interface AdapterCallback {
+        void onMethodCallback();
+    }
+
 }

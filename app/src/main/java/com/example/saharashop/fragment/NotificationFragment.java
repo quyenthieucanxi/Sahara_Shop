@@ -35,7 +35,7 @@ import retrofit2.Response;
  * Use the {@link NotificationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NotificationFragment extends Fragment {
+public class NotificationFragment extends Fragment implements NotificationAdapter.AdapterCallback{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,6 +47,7 @@ public class NotificationFragment extends Fragment {
     private String mParam2;
     private List<Notification> lstNotifications = new ArrayList<>();
     private User user = SharedPrefManager.getInstance(getContext()).getUser();
+    private View view;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -83,15 +84,25 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_notification, container, false);
+        view = inflater.inflate(R.layout.fragment_notification, container, false);
 
         getNotification(view);
-
         return view;
     }
 
+    @Override
+    public void onMethodCallback() {
+        getNotification(getView());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getNotification(view);
+    }
+
     private void setNotification(@NotNull View view) {
-        NotificationAdapter adapter = new NotificationAdapter(lstNotifications);
+        NotificationAdapter adapter = new NotificationAdapter(lstNotifications, this);
         RecyclerView rv_account = view.findViewById(R.id.rvNotifications);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rv_account.setLayoutManager(layoutManager);

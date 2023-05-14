@@ -20,7 +20,10 @@ import com.example.saharashop.entity.Account1;
 import com.example.saharashop.entity.Test;
 import com.example.saharashop.entity.User;
 import com.example.saharashop.fragment.MenuFragment;
+import com.example.saharashop.untils.AppUtilities;
 import com.example.saharashop.untils.SharedPrefManager;
+
+import javax.mail.MessagingException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,17 +43,16 @@ public class Login  extends AppCompatActivity {
         }
         binding.btnLogIn.setOnClickListener(view -> Login());
         binding.txtSignUp.setOnClickListener(view -> Singup());
-
-
-
+        binding.btnForgotPassword.setOnClickListener(view -> ForgotPassword());
     }
+
+    private void ForgotPassword() {
+        Intent intent = new Intent(Login.this, ForgotPasswordActivity.class);
+        startActivity(intent);
+    }
+
     private void Singup() {
         Intent intent = new Intent(Login.this, SignupActivity.class);
-        startActivity(intent);
-        finish();
-    }
-    private void setForgotPassword(View view) {
-        Intent intent = new Intent(this, ForgotPasswordActivity.class);
         startActivity(intent);
         finish();
     }
@@ -103,8 +105,7 @@ public class Login  extends AppCompatActivity {
                         Account1 account1 = response.body();
                         addUserToSharedPref(account1);
 
-                        Toast.makeText(getApplicationContext(), "Đăng nhập thành công với", Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(getApplicationContext(), "Đăng nhập thành công với " + account1.getUsername(), Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(Login.this, MainActivity.class);
                         startActivity(intent);

@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
+
 import android.app.Fragment;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -69,7 +71,7 @@ public class CartDetailActivity extends AppCompatActivity {
     }
 
     private void addNotification(){
-        Notification notification = new Notification(user.getId(), "đặt hàng thành công", true);
+        Notification notification = new Notification(user.getId(), "Bạn đã đặt "+quantity+" " + product.getName()+" thành công!", true);
         APIService.createService(INotification.class).add(notification).enqueue(new Callback<Notification>() {
             @Override
             public void onResponse(Call<Notification> call, Response<Notification> response) {
@@ -95,7 +97,7 @@ public class CartDetailActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(getApplicationContext(), "Thêm bill thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Thêm bill thành công!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -106,8 +108,16 @@ public class CartDetailActivity extends AppCompatActivity {
     }
 
     private void Order(View view) {
-        addNotification();
-        addBill();
+        try {
+            addNotification();
+            addBill();
+            Intent intent = new Intent(CartDetailActivity.this, BillHistoryActivity.class);
+            startActivity(intent);
+        }
+        catch (Exception e){
+            Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+        }
+
     }
     private void setCancelOrder(@NotNull View view) {
         APIService.createService(ICartService.class).delete(cart.getId()).enqueue(new Callback<Cart>() {

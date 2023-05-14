@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.application'
-    id 'com.google.gms.google-services'
 }
 
 android {
@@ -48,13 +47,7 @@ dependencies {
     implementation 'androidx.activity:activity:1.6.1'
     implementation 'androidx.activity:activity-ktx:1.6.1'
 
-    implementation 'com.google.android.gms:play-services-auth:20.4.1'
-/**firebase dependencies*/
-    implementation 'com.google.firebase:firebase-auth:21.1.0'
-    implementation 'com.google.firebase:firebase-database:20.1.0'
-    implementation platform('com.google.firebase:firebase-bom:31.2.3')
-    implementation 'com.google.firebase:firebase-database-ktx'
-    implementation 'com.google.firebase:firebase-firestore:24.4.5'
-    implementation 'com.google.firebase:firebase-storage:20.1.0'
-    implementation 'com.firebaseui:firebase-ui-database:8.0.1'
+    implementation 'com.sun.mail:android-mail:1.6.0'
+    implementation 'com.sun.mail:android-activation:1.6.0'
+
 }

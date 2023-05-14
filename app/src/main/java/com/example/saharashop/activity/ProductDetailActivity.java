@@ -43,7 +43,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         this.quantity = 0;
         binding.txtQuantity.setText("0");
-        binding.btnViewCart.setVisibility(View.GONE);
+//        binding.btnViewCart.setVisibility(View.GONE);
         binding.btnBackDetail.setOnClickListener(view -> finish());
         binding.btnViewCart.setOnClickListener(this::setViewCart);
         binding.plus.setOnClickListener(this::setAddQuantity);
