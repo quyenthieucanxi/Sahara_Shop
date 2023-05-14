@@ -10,27 +10,21 @@ public class User {
     @SerializedName("accountId")
     @Expose
     private String accountId;
-
     @SerializedName("fullname")
     @Expose
     private String fullname;
-
     @SerializedName("sex")
     @Expose
     private String sex;
-
     @SerializedName("phone")
     @Expose
     private String phone;
-
     @SerializedName("address")
     @Expose
     private String address;
-
     @SerializedName("avatar")
     @Expose
     private String avatar;
-
     @SerializedName("state")
     @Expose
     private Boolean state;

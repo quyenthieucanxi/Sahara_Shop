@@ -75,10 +75,8 @@ public class Login  extends AppCompatActivity {
                         userJson.getAvatar(),
                         userJson.getState()
                 );
-
                 SharedPrefManager.getInstance(getApplicationContext()).userLogin(user, account1);
             }
-
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
@@ -104,13 +102,9 @@ public class Login  extends AppCompatActivity {
                     if (response.body() != null) {
                         Account1 account1 = response.body();
                         addUserToSharedPref(account1);
-
                         Toast.makeText(getApplicationContext(), "Đăng nhập thành công với " + account1.getUsername(), Toast.LENGTH_SHORT).show();
-
                         Intent intent = new Intent(Login.this, MainActivity.class);
                         startActivity(intent);
-
-
                     }
                     else
                         Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
@@ -119,7 +113,6 @@ public class Login  extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<Account1> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();

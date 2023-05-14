@@ -1,12 +1,17 @@
 package com.example.saharashop.activity;
 
+import static com.example.saharashop.untils.AppUtilities.REQUEST_CODE_OPEN_DOCUMENT;
 import static com.example.saharashop.untils.AppUtilities.SELECT_PICTURE;
 import static com.example.saharashop.untils.AppUtilities.TAKE_PICTURE;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +19,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
 import com.example.saharashop.api.APIService;
 import com.example.saharashop.api.IAuthService;
@@ -32,6 +38,8 @@ import retrofit2.Response;
 public class SignupActivity extends AppCompatActivity {
     private SignupBinding binding;
     private Uri mUri;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+    private static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +51,12 @@ public class SignupActivity extends AppCompatActivity {
         binding.btnSignUp.setOnClickListener(view -> handleSignUp());
         binding.txtSignIn.setOnClickListener(view -> setLogIn());
         binding.btnChoosePhoto.setOnClickListener(AppUtilities::setChoosePhoto);
+        if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        }
         setConfirmPassword();
     }
+
 
     private void Back(){
         Intent intent = new Intent(SignupActivity.this, Login.class);
@@ -123,15 +135,12 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Đăng ký thất bại 2", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 AppUtilities.SendMailTask sendEmailTask = new AppUtilities.SendMailTask(email, "ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG", "Cảm ơn bạn đã đăng ký tài khoản! Chúc bạn có trải nghiệm tốt nhất trên ứng dụng của chúng tôi! <3");
                 sendEmailTask.execute();
-
                 Toast.makeText(getApplicationContext(), "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SignupActivity.this, Login.class);
                 startActivity(intent);
             }
-
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Đã xảy ra lỗi trong quá trình tạo tài khoản. Vui lòng tạo lại!",
@@ -162,6 +171,27 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Đăng ký thất bại 11", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Quyền đã được cấp, thực hiện công việc cần thiết
+                    handleSignUp();
+                } else {
+                    // Quyền bị từ chối, thông báo cho người dùng biết rằng ứng dụng không thể hoạt động mà không có quyền truy cập
+                    Toast.makeText(this, "Ứng dụng cần quyền truy cập để thực hiện chức năng này", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+            default: {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+            }
+        }
     }
 
     private void handleSignUp() {

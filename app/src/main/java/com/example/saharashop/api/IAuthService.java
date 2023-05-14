@@ -9,8 +9,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface IAuthService {
-
-
     @POST("account/login")
     Call<Account1> login(@Body Test test);
     @POST("account/sign-up")

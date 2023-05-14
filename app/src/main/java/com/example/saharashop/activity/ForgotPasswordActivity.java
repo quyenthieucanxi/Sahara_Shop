@@ -34,7 +34,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ForgotPasswordBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         binding.otp.setVisibility(View.GONE);
         binding.btnGetPassword.setVisibility(View.GONE);
         binding.btnBack.setOnClickListener(view -> onBackPressed());
