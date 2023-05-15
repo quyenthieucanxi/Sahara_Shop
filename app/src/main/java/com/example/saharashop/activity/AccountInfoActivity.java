@@ -41,6 +41,8 @@ import com.example.saharashop.untils.AppUtilities;
 import com.example.saharashop.untils.RealPathUtil;
 import com.example.saharashop.untils.SharedPrefManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -65,6 +67,7 @@ public class AccountInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAccountInfoBinding.inflate(getLayoutInflater());
+        binding.btnTakePhoto.setVisibility(View.GONE);
         setContentView(binding.getRoot());
         binding.btnBack.setOnClickListener(view -> finish());
         binding.btnChoosePhoto.setOnClickListener(AppUtilities::setChoosePhoto);
@@ -127,12 +130,30 @@ public class AccountInfoActivity extends AppCompatActivity {
         });
     }
 
+    private boolean validate(@NotNull String fullName, String email, String phone, String address) {
+        if (fullName.equals("")) return false;
+        if (email.equals("")) return false;
+        if (phone.equals("")) return false;
+        if (address.equals("")) return false;
+        return true;
+    }
+
 
     private void handleUpdate() {
         String fullname = binding.txtFullName.getText().toString().trim();
         String address = binding.txtAddress.getText().toString().trim();
         String phone = binding.txtPhone.getText().toString().trim();
-        User newUser = new User(fullname, phone, address, mUri.toString()==null?"avatar":mUri.toString());
+        String email = binding.txtEmail.getText().toString().trim();
+        if (!validate(fullname, email, phone, address)) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin cá nhân!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String avatar;
+        if(mUri==null)
+            avatar = "avatar";
+        else
+            avatar = mUri.toString();
+        User newUser = new User(fullname, phone, address, avatar);
         updateUser(user.getId(), newUser);
     }
 

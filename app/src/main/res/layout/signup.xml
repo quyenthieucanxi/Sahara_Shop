@@ -96,8 +96,8 @@
                     android:layout_width="160dp"
                     android:layout_height="160dp"
                     android:layout_gravity="center"
-                    android:scaleType="fitXY"
                     android:contentDescription="Avatar"
+                    android:scaleType="fitXY"
                     android:src="@drawable/account" />
             </androidx.cardview.widget.CardView>
 
@@ -140,9 +140,9 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/fullName"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="2dp"
+                android:hint="@string/fullName"
                 app:endIconMode="clear_text"
                 app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
                 app:hintTextColor="@color/theme_color"
@@ -265,10 +265,10 @@
                 android:layout_marginBottom="2dp"
                 android:hint="@string/txtConfirmPassword"
                 app:endIconMode="password_toggle"
+                app:helperTextEnabled="true"
                 app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
                 app:hintTextColor="@color/theme_color"
                 app:startIconContentDescription="@string/txtConfirmPassword"
-                app:helperTextEnabled="true"
                 app:startIconDrawable="@drawable/password">
 
                 <com.google.android.material.textfield.TextInputEditText

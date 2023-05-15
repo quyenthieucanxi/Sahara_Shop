@@ -40,12 +40,23 @@ public class Bill {
     @Expose
     private long price;
 
+    @SerializedName("status")
+    @Expose
+    private String status;
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String state) {
+        this.status = status;
     }
 
     public long getQuantity() {
@@ -113,7 +124,7 @@ public class Bill {
     }
 
 
-    public Bill(String id, String userId, String cartId, String phone, String address, String productName, Date date, int quantity, long price) {
+    public Bill(String id, String userId, String cartId, String phone, String address, String productName, Date date, int quantity, long price, String status) {
         this.id = id;
         this.userId = userId;
         this.cartId = cartId;
@@ -123,6 +134,7 @@ public class Bill {
         this.date = date;
         this.quantity = quantity;
         this.price = price;
+        this.status = status;
     }
 
     public Bill(String userId, String cartId, String phone, String address, String productName, int quantity, long price) {

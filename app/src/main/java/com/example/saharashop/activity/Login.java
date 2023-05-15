@@ -101,10 +101,17 @@ public class Login  extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         Account1 account1 = response.body();
-                        addUserToSharedPref(account1);
+                        Log.d("aaaaaaaaaaaaaaa", "Value: " + response.body().getRoleID());
                         Toast.makeText(getApplicationContext(), "Đăng nhập thành công với " + account1.getUsername(), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(Login.this, MainActivity.class);
-                        startActivity(intent);
+                        if(account1.getRoleID().equals("user")) {
+                            addUserToSharedPref(account1);
+                            Intent intent = new Intent(Login.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                        else{
+                            Intent intent = new Intent(Login.this, MainAdminActivity.class);
+                            startActivity(intent);
+                        }
                     }
                     else
                         Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();

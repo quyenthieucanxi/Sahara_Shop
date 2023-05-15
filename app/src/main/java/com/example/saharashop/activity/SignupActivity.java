@@ -48,6 +48,7 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         Context ctx = this;
         binding.btnBack.setOnClickListener(view -> Back());
+        binding.btnTakePhoto.setVisibility(View.GONE);
         binding.btnSignUp.setOnClickListener(view -> handleSignUp());
         binding.txtSignIn.setOnClickListener(view -> setLogIn());
         binding.btnChoosePhoto.setOnClickListener(AppUtilities::setChoosePhoto);
@@ -161,8 +162,12 @@ public class SignupActivity extends AppCompatActivity {
                 }
                 valueAccountId = response.body().getId();
                 Toast.makeText(getApplicationContext(), "Tạo tài khoản thành công thành công: ", Toast.LENGTH_SHORT).show();
-
-                User user = new User(valueAccountId, valueFullName, getSex(), valuePhone, valueAddress, mUri.toString(), true);
+                String avatar;
+                if(mUri==null)
+                    avatar = "avatar";
+                else
+                    avatar = mUri.toString();
+                User user = new User(valueAccountId, valueFullName, getSex(), valuePhone, valueAddress, avatar, true);
                 addUser(user, account1.getEmail());
             }
 
