@@ -1,12 +1,17 @@
 package com.example.saharashop.activity;
 
+import static com.example.saharashop.untils.AppUtilities.REQUEST_CODE_OPEN_DOCUMENT;
 import static com.example.saharashop.untils.AppUtilities.SELECT_PICTURE;
 import static com.example.saharashop.untils.AppUtilities.TAKE_PICTURE;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +19,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
 import com.example.saharashop.api.APIService;
 import com.example.saharashop.api.IAuthService;
@@ -31,6 +37,9 @@ import retrofit2.Response;
 
 public class SignupActivity extends AppCompatActivity {
     private SignupBinding binding;
+    private Uri mUri;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+    private static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +47,24 @@ public class SignupActivity extends AppCompatActivity {
         binding = SignupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Context ctx = this;
-        binding.btnBack.setOnClickListener(view -> finish());
+        binding.btnBack.setOnClickListener(view -> Back());
+        binding.btnTakePhoto.setVisibility(View.GONE);
         binding.btnSignUp.setOnClickListener(view -> handleSignUp());
         binding.txtSignIn.setOnClickListener(view -> setLogIn());
         binding.btnChoosePhoto.setOnClickListener(AppUtilities::setChoosePhoto);
+        if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        }
         setConfirmPassword();
     }
+
+
+    private void Back(){
+        Intent intent = new Intent(SignupActivity.this, Login.class);
+        startActivity(intent);
+        finish();
+    }
+
     private void setConfirmPassword() {
         binding.txtConfirmPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -62,6 +83,7 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
     }
+
     private void setConfirmPasswordErrorHelper() {
         String password = binding.txtPassword.getText().toString();
         String confirmPassword = binding.txtConfirmPassword.getText().toString();
@@ -70,14 +92,16 @@ public class SignupActivity extends AppCompatActivity {
             binding.layoutConfirmPassword.setErrorEnabled(false);
         else {
             binding.layoutConfirmPassword.setErrorEnabled(true);
-            binding.layoutConfirmPassword.setError("Phải trùng với mật khẩu đã nhập.");
+            binding.layoutConfirmPassword.setError("Phải trùng với mật khẩu đã nhập");
         }
     }
+
     void setLogIn() {
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
         finish();
     }
+
     private boolean validate(@NotNull String fullName, String email, String phone, String address,
                              String username, String password, String confirmPassword) {
         if (fullName.equals("")) return false;
@@ -104,7 +128,7 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
-    private void addUser(User user){
+    private void addUser(User user, String email) {
         APIService.createService(IAuthService.class).addUser(user).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -112,7 +136,9 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Đăng ký thất bại 2", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(getApplicationContext(), "Đăng ký thành công: " + response.body().getAccountId(), Toast.LENGTH_SHORT).show();
+                AppUtilities.SendMailTask sendEmailTask = new AppUtilities.SendMailTask(email, "ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG.", "Cảm ơn bạn đã đăng ký tài khoản! Chúc bạn có trải nghiệm tốt nhất trên ứng dụng của chúng tôi! <3");
+                sendEmailTask.execute();
+                Toast.makeText(getApplicationContext(), "Đăng ký thành công.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SignupActivity.this, Login.class);
                 startActivity(intent);
             }
@@ -124,9 +150,10 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    private void addAccount(Account1 account1, String valueFullName, String valuePhone, String valueAddress, String valueConfirmPassword){
+    private void addAccount(Account1 account1, String valueFullName, String valuePhone, String valueAddress) {
         APIService.createService(IAuthService.class).signUp(account1).enqueue(new Callback<Account1>() {
             String valueAccountId;
+
             @Override
             public void onResponse(Call<Account1> call, Response<Account1> response) {
                 if (response.code() != 200) {
@@ -134,16 +161,42 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
                 valueAccountId = response.body().getId();
-                Toast.makeText(getApplicationContext(), "Tạo tài khoản thành công thành công: " + response.body().getId(), Toast.LENGTH_SHORT).show();
-
-                User user = new User(valueAccountId, valueFullName, getSex(), valuePhone, valueAddress, valueConfirmPassword, true);
-                addUser(user);
+                Toast.makeText(getApplicationContext(), "Tạo tài khoản thành công thành công: ", Toast.LENGTH_SHORT).show();
+                String avatar;
+                if(mUri==null)
+                    avatar = "avatar";
+                else
+                    avatar = mUri.toString();
+                User user = new User(valueAccountId, valueFullName, getSex(), valuePhone, valueAddress, avatar, true);
+                addUser(user, account1.getEmail());
             }
+
             @Override
             public void onFailure(Call<Account1> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Đăng ký thất bại 11", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Quyền đã được cấp, thực hiện công việc cần thiết
+                    handleSignUp();
+                } else {
+                    // Quyền bị từ chối, thông báo cho người dùng biết rằng ứng dụng không thể hoạt động mà không có quyền truy cập
+                    Toast.makeText(this, "Ứng dụng cần quyền truy cập để thực hiện chức năng này", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+            default: {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+            }
+        }
     }
 
     private void handleSignUp() {
@@ -167,29 +220,20 @@ public class SignupActivity extends AppCompatActivity {
         }
         Account1 account = new Account1(valueUsername, valueEmail, valuePassword, "user", true);
 
-        addAccount(account, valueFullName, valuePhone, valueAddress, valueConfirmPassword);
+        addAccount(account, valueFullName, valuePhone, valueAddress);
 
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode == SELECT_PICTURE) {
-                // Get the url of the image from data
-                Uri selectedImageUri = data.getData();
-                if (null != selectedImageUri) {
-                    // update the preview image in the layout
-                    binding.imgAvt.setImageURI(selectedImageUri);
-                }
-            } //else  (requestCode == TAKE_PICTURE) {
-                //setPic(imgAvt);
+        if (requestCode == AppUtilities.REQUEST_CODE_OPEN_DOCUMENT && resultCode == RESULT_OK && data != null) {
+            Uri uri = data.getData();
+            mUri = uri;
+            if (uri != null) {
+                binding.imgAvt.setImageURI(uri);
             }
-        } //else if (resultCode == FirebaseActivity.CREATE_ACCOUNT_OK) {
-//            if (requestCode == FirebaseActivity.CREATE_ACCOUNT) {
-//                Toast.makeText(this, "Đã đăng ký thành công!", Toast.LENGTH_SHORT).show();
-//                finish();
-//            }
-        //}
+        }
     }
+}
 
 

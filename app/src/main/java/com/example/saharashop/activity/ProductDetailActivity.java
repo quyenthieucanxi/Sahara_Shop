@@ -43,7 +43,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         this.quantity = 0;
         binding.txtQuantity.setText("0");
-//        binding.btnViewCart.setVisibility(View.GONE);
+        binding.btnViewCart.setVisibility(View.GONE);
         binding.btnBackDetail.setOnClickListener(view -> finish());
         binding.btnViewCart.setOnClickListener(this::setViewCart);
         binding.plus.setOnClickListener(this::setAddQuantity);
@@ -53,8 +53,12 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
     private void setViewCart(View view) {
         Intent intent = new Intent(view.getContext(), CartDetailActivity.class);
-        CartDetailActivity.cart = this.cart;
-        view.getContext().startActivity(intent);
+        if(this.cart == null)
+            view.getContext().startActivity(intent);
+        else{
+            CartDetailActivity.cart = this.cart;
+            view.getContext().startActivity(intent);
+        }
         finish();
     }
     private void setAddQuantity(View view) {

@@ -20,7 +20,10 @@ import com.example.saharashop.entity.Account1;
 import com.example.saharashop.entity.Test;
 import com.example.saharashop.entity.User;
 import com.example.saharashop.fragment.MenuFragment;
+import com.example.saharashop.untils.AppUtilities;
 import com.example.saharashop.untils.SharedPrefManager;
+
+import javax.mail.MessagingException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,17 +43,16 @@ public class Login  extends AppCompatActivity {
         }
         binding.btnLogIn.setOnClickListener(view -> Login());
         binding.txtSignUp.setOnClickListener(view -> Singup());
-
-
-
+        binding.btnForgotPassword.setOnClickListener(view -> ForgotPassword());
     }
+
+    private void ForgotPassword() {
+        Intent intent = new Intent(Login.this, ForgotPasswordActivity.class);
+        startActivity(intent);
+    }
+
     private void Singup() {
         Intent intent = new Intent(Login.this, SignupActivity.class);
-        startActivity(intent);
-        finish();
-    }
-    private void setForgotPassword(View view) {
-        Intent intent = new Intent(this, ForgotPasswordActivity.class);
         startActivity(intent);
         finish();
     }
@@ -60,7 +62,7 @@ public class Login  extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(!response.isSuccessful()){
-                    Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu !", Toast.LENGTH_SHORT).show();
                 }
                 User userJson = response.body();
                 User user = new User(
@@ -73,13 +75,11 @@ public class Login  extends AppCompatActivity {
                         userJson.getAvatar(),
                         userJson.getState()
                 );
-
                 SharedPrefManager.getInstance(getApplicationContext()).userLogin(user, account1);
             }
-
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống !", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -89,7 +89,7 @@ public class Login  extends AppCompatActivity {
         String email = binding.email.getText().toString().trim();
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // Nếu email không đúng định dạng, hiển thị thông báo và focus vào ô email
-            binding.email.setError("Email không hợp lệ");
+            binding.email.setError("Email không hợp lệ !");
             binding.email.requestFocus();
             return;
         }
@@ -101,27 +101,28 @@ public class Login  extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         Account1 account1 = response.body();
-                        addUserToSharedPref(account1);
-
-                        Toast.makeText(getApplicationContext(), "Đăng nhập thành công với", Toast.LENGTH_SHORT).show();
-
-
-                        Intent intent = new Intent(Login.this, MainActivity.class);
-                        startActivity(intent);
-
-
+                        Log.d("aaaaaaaaaaaaaaa", "Value: " + response.body().getRoleID());
+                        Toast.makeText(getApplicationContext(), "Đăng nhập thành công với " + account1.getUsername(), Toast.LENGTH_SHORT).show();
+                        if(account1.getRoleID().equals("user")) {
+                            addUserToSharedPref(account1);
+                            Intent intent = new Intent(Login.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                        else{
+                            Intent intent = new Intent(Login.this, MainAdminActivity.class);
+                            startActivity(intent);
+                        }
                     }
                     else
-                        Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu !", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu !", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<Account1> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống !", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.saharashop.R;
@@ -48,6 +49,7 @@ public class NotificationFragment extends Fragment implements NotificationAdapte
     private List<Notification> lstNotifications = new ArrayList<>();
     private User user = SharedPrefManager.getInstance(getContext()).getUser();
     private View view;
+    private ImageButton btnBack;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -85,10 +87,16 @@ public class NotificationFragment extends Fragment implements NotificationAdapte
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_notification, container, false);
-
+        btnBack = view.findViewById(R.id.btnBack_notification);
+        btnBack.setOnClickListener(view->Back());
         getNotification(view);
         return view;
     }
+
+    private void Back() {
+
+    }
+
 
     @Override
     public void onMethodCallback() {
