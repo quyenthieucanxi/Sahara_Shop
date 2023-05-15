@@ -62,7 +62,7 @@ public class Login  extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(!response.isSuccessful()){
-                    Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu !", Toast.LENGTH_SHORT).show();
                 }
                 User userJson = response.body();
                 User user = new User(
@@ -79,7 +79,7 @@ public class Login  extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống !", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -89,7 +89,7 @@ public class Login  extends AppCompatActivity {
         String email = binding.email.getText().toString().trim();
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // Nếu email không đúng định dạng, hiển thị thông báo và focus vào ô email
-            binding.email.setError("Email không hợp lệ");
+            binding.email.setError("Email không hợp lệ !");
             binding.email.requestFocus();
             return;
         }
@@ -107,15 +107,15 @@ public class Login  extends AppCompatActivity {
                         startActivity(intent);
                     }
                     else
-                        Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu !", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu !", Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onFailure(Call<Account1> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống !", Toast.LENGTH_SHORT).show();
             }
         });
     }

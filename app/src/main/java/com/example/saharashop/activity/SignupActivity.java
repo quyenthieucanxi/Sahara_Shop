@@ -91,7 +91,7 @@ public class SignupActivity extends AppCompatActivity {
             binding.layoutConfirmPassword.setErrorEnabled(false);
         else {
             binding.layoutConfirmPassword.setErrorEnabled(true);
-            binding.layoutConfirmPassword.setError("Phải trùng với mật khẩu đã nhập.");
+            binding.layoutConfirmPassword.setError("Phải trùng với mật khẩu đã nhập");
         }
     }
 
@@ -135,9 +135,9 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Đăng ký thất bại 2", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                AppUtilities.SendMailTask sendEmailTask = new AppUtilities.SendMailTask(email, "ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG", "Cảm ơn bạn đã đăng ký tài khoản! Chúc bạn có trải nghiệm tốt nhất trên ứng dụng của chúng tôi! <3");
+                AppUtilities.SendMailTask sendEmailTask = new AppUtilities.SendMailTask(email, "ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG.", "Cảm ơn bạn đã đăng ký tài khoản! Chúc bạn có trải nghiệm tốt nhất trên ứng dụng của chúng tôi! <3");
                 sendEmailTask.execute();
-                Toast.makeText(getApplicationContext(), "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Đăng ký thành công.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SignupActivity.this, Login.class);
                 startActivity(intent);
             }
