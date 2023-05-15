@@ -18,5 +18,6 @@ router.get(
   "/getDiscountProductByName",
   ProductController.getDiscountProductByName
 );
+router.get("/search", ProductController.search);
 
 module.exports = router;
