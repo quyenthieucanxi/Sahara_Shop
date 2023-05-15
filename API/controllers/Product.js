@@ -69,16 +69,60 @@ class Product {
         res.json(err);
       });
   }
-  // Search product by req.body.text or req.body.type
+
   search(req, res, next) {
-    ProductModel.find({
-      $or: [
-        { name: { $regex: req.body.text, $options: "i" } },
-        { type: { $regex: req.body.text, $options: "i" } },
-      ],
-    })
-      .then((result) => {
-        res.json(result);
+    const search = req.query.search;
+    var checkId = [];
+    var typeModel = [];
+    ProductModel.find({})
+      .then(async (result) => {
+        var result_clean = result.map((item) => {
+          checkId.push(item.typeId);
+          return {
+            _id: item._id,
+            name: item.name
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, ""),
+            typeId: item.typeId,
+          };
+        });
+        await ProductTypeModel.find(
+          { _id: { $in: checkId } },
+          { _id: 1, name: 1 }
+        ).then((result) => {
+          typeModel = result;
+        });
+        result_clean = result_clean.map((item) => {
+          var type = typeModel.find(
+            (type) => type._id.toString() === item.typeId.toString()
+          );
+          return {
+            _id: item._id,
+            name: item.name,
+            typeName: type.name,
+          };
+        });
+        console.log(result_clean);
+        result_clean = result_clean.filter(
+          (item) =>
+            item.name.includes(
+              search
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+            ) ||
+            item.typeName.includes(
+              search
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+            )
+        );
+        checkId = result_clean.map((item) => item._id.toString());
+        res.json(
+          result.filter((item) => checkId.includes(item._id.toString()))
+        );
       })
       .catch((err) => {
         res.json(err);
@@ -104,7 +148,6 @@ class Product {
 
   getDiscountProductByName(req, res, next) {
     const name = req.query.name;
-
     ProductModel.find({})
       .then(async (result) => {
         var checkId = [];
