@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.BillHistoryActivity">
+
+    <LinearLayout
+        android:id="@+id/topNavbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFA000"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/arrow_back" />
+
+        <TextView
+            android:id="@+id/txtHelp"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="20"
+            android:ems="10"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Danh sách sản phẩm yêu thích"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            android:textSize="20sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="#E4EA5353"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tvNumProducts"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="10dp"
+            android:text="0"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="product(s) "
+            android:textColor="@color/light_mode"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp">
+
+        <GridView
+            android:id="@+id/searchResult"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="4" />
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/noMoreBills"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bill_100px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No more product"
+            android:textColor="@color/theme_color"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

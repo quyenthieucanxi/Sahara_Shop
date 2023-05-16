@@ -250,6 +250,38 @@
                 android:textColor="#E64A19"
                 android:textSize="20sp"
                 android:textStyle="bold" />
+            <Button
+                android:id="@+id/btnAddProductLove"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="#9AFFA000"
+                android:drawableStart="@drawable/pay_now"
+                android:font="@font/bungee"
+                android:gravity="center"
+                android:text="Add to Product Love"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="#E64A19"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+            <Button
+                android:id="@+id/btnRemoveProductLove"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="#9AFFA000"
+                android:drawableStart="@drawable/pay_now"
+                android:font="@font/bungee"
+                android:gravity="center"
+                android:text="Remove to Product Love"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="#E64A19"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

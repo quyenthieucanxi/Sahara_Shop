@@ -86,7 +86,7 @@ public class SharedPrefManager {
                 sharedPreferences.getBoolean(KEY_STATEACCOUNT, true)
         );
     }
-    public String getIdUser(){
+    public static String getIdUser(){
         SharedPreferences sharedPreferences = ctx.getSharedPreferences (SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_IDUSER, null);
     }
