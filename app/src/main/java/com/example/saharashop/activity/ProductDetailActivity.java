@@ -1,5 +1,7 @@
 package com.example.saharashop.activity;
 
+import static com.example.saharashop.untils.SharedPrefManager.getIdUser;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -20,15 +22,21 @@ import com.example.saharashop.databinding.ActivityProductDetailBinding;
 import com.example.saharashop.entity.Cart;
 import com.example.saharashop.entity.Product;
 import com.example.saharashop.entity.Store;
+import com.example.saharashop.entity.User;
 import com.example.saharashop.untils.SharedPrefManager;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProductDetailActivity extends AppCompatActivity {
+    public static final int GET_PRODUCT_LOVE = 2;
+    public static final int GET_PRODUCT_LOVE_OK = 200;
     public static final String PRODUCT_ID = "productId";
     private Product product = new Product();
     private static Cart cart = new Cart();
@@ -44,12 +52,28 @@ public class ProductDetailActivity extends AppCompatActivity {
         this.quantity = 0;
         binding.txtQuantity.setText("0");
         binding.btnViewCart.setVisibility(View.GONE);
-        binding.btnBackDetail.setOnClickListener(view -> finish());
+        Bundle bundle = getIntent().getExtras();
+        if (bundle.getString("productLove") != null) {
+            binding.btnRemoveProductLove.setVisibility(View.VISIBLE);
+            binding.btnAddProductLove.setVisibility(View.GONE);
+        }
+        else {
+            binding.btnRemoveProductLove.setVisibility(View.GONE);
+            binding.btnAddProductLove.setVisibility(View.VISIBLE);
+        }
+        binding.btnBackDetail.setOnClickListener(view ->back());
         binding.btnViewCart.setOnClickListener(this::setViewCart);
         binding.plus.setOnClickListener(this::setAddQuantity);
         binding.subtract.setOnClickListener(this::setSubtractQuantity);
         binding.btnAddCart.setOnClickListener(this::setAddCart);
+        binding.btnAddProductLove.setOnClickListener(this::setAddProductLove);
+        binding.btnRemoveProductLove.setOnClickListener(this::setRemoveProductLove);
         setProduct();
+    }
+    private void back()
+    {
+        setResult(GET_PRODUCT_LOVE_OK);
+        finish();
     }
     private void setViewCart(View view) {
         Intent intent = new Intent(view.getContext(), CartDetailActivity.class);
@@ -169,6 +193,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                      cart = response.body();
                     binding.btnAddCart.setVisibility(View.GONE);
                     binding.btnViewCart.setVisibility(View.VISIBLE);
+
                 }
             }
 
@@ -179,9 +204,57 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
 
         }
-        /*else {
-            Intent intent = new Intent(this, Login.class);
-            startActivity(intent);
-        }*/
+    private void setAddProductLove(View view)
+    {
+        if (this.quantity <= 0) {
+            Toast.makeText(this, "Số lượng sản phẩm tối thiểu là 1.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("productLove",product.getId());
 
+        APIService.createService(IProductType.class).addProductLove(getIdUser(),map).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (!response.isSuccessful())
+                {
+
+                    Toast.makeText(ProductDetailActivity.this, "Thêm sản phẩm yêu thích thất bại", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(getApplicationContext(), "Đã thêm vào sản phẩm yêu thích!", Toast.LENGTH_SHORT).show();
+                Log.d("UserID",product.getId());
+                binding.btnAddProductLove.setVisibility(View.GONE);
+                binding.btnRemoveProductLove.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void setRemoveProductLove(View view){
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("productLove",product.getId());
+        APIService.createService(IProductType.class).removeProductLove(getIdUser(),map).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (!response.isSuccessful())
+                {
+                    Toast.makeText(ProductDetailActivity.this, "Xóa sản phẩm yêu thích thất bại", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(ProductDetailActivity.this, "Xóa sản phẩm yêu thích thành công", Toast.LENGTH_SHORT).show();
+                binding.btnAddProductLove.setVisibility(View.VISIBLE);
+                binding.btnRemoveProductLove.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
 }
