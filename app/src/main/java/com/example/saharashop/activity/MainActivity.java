@@ -11,11 +11,14 @@ import android.os.Bundle;
 import android.view.Menu;
 
 import com.example.saharashop.R;
+import com.example.saharashop.entity.Account1;
+import com.example.saharashop.entity.User;
 import com.example.saharashop.fragment.CartFragment;
 import com.example.saharashop.fragment.DiscountFragment;
 import com.example.saharashop.fragment.HomeFragment;
 import com.example.saharashop.fragment.MenuFragment;
 import com.example.saharashop.fragment.NotificationFragment;
+import com.example.saharashop.untils.SharedPrefManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navigationView = this.findViewById(R.id.bottom_navbar);
         navigationView.setOnNavigationItemSelectedListener(onNavItemSelectedListener);
-
         if (savedInstanceState == null) {
             navigationView.setSelectedItemId(R.id.menuHome);
         }

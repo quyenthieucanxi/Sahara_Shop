@@ -36,6 +36,7 @@ public class SharedPrefManager {
         }
         return instance;
     }
+
     //this method will store the user data in shared preferences
     public void userLogin (User user, Account1 account1) {
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -54,6 +55,17 @@ public class SharedPrefManager {
         editor.putString(KEY_ROLEID, account1.getRoleID());
         editor.putBoolean(KEY_STATEACCOUNT, account1.getState()==null?true:account1.getState());
         editor.apply();
+    }
+
+    public void adminLogin(String roleID){
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_ROLEID, roleID);
+    }
+
+    public String getRoleID(){
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences (SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_ROLEID, null);
     }
 
     //this method will checker whether user is already logged in or not

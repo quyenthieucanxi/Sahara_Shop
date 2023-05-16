@@ -12,8 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
 import com.example.saharashop.activity.Login;
 import com.example.saharashop.adapter.RecyleItemViewAdapter;
@@ -42,6 +44,11 @@ public class MenuFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private TextView tv_menuFullName;
     private TextView tv_menuUsername;
+    private ImageView menuAvatar;
+    private FragmentMenuBinding binding;
+    private User user = SharedPrefManager.getInstance(getContext()).getUser();
+    private Account1 account1 = SharedPrefManager.getInstance(getContext()).getAccount();
+    private String roleID = SharedPrefManager.getInstance(getContext()).getRoleID();
 
     private Context context;
 
@@ -90,6 +97,7 @@ public class MenuFragment extends Fragment {
 
         tv_menuUsername = view.findViewById(R.id.menuUsername);
         tv_menuFullName = view.findViewById(R.id.menuFullName);
+        menuAvatar = view.findViewById(R.id.menuAvatar);
 
         setMenuItemSection(view);
         setLoggedInUserInfo();
@@ -98,12 +106,15 @@ public class MenuFragment extends Fragment {
         return view;
     }
     private void setLoggedInUserInfo() {
-        if (SharedPrefManager.getInstance(getContext()).isLoggedIn()) {
-            User user = SharedPrefManager.getInstance(getContext()).getUser();
-            Account1 account1 = SharedPrefManager.getInstance(getContext()).getAccount();
-            //binding.menuAvatar.setImageBitmap(user.getAvatar());
+        if (SharedPrefManager.getInstance(getContext()).isLoggedIn() && roleID.equals("user")) {
+            String avatarUri = user.getAvatar();
+            Glide.with(getContext()).load(avatarUri).into(menuAvatar);
             tv_menuFullName.setText(user.getFullname());
             tv_menuUsername.setText("@" + account1.getUsername());
+        }
+        else{
+            tv_menuFullName.setText("Admin");
+            tv_menuUsername.setText("@admin");
         }
     }
     private void setMenuItemSection(@NotNull View view) {
