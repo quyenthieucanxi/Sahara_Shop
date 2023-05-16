@@ -31,6 +31,8 @@ import retrofit2.Response;
 
 public class Login  extends AppCompatActivity {
     private LoginBinding binding;
+    public static String roleID;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,7 @@ public class Login  extends AppCompatActivity {
         setContentView(binding.getRoot());
         Context ctx = this;
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+            roleID = SharedPrefManager.getInstance(this).getRoleID();
             finish();
             startActivity(new Intent(this, MainActivity.class));
         }
@@ -101,14 +104,17 @@ public class Login  extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         Account1 account1 = response.body();
-                        Log.d("aaaaaaaaaaaaaaa", "Value: " + response.body().getRoleID());
                         Toast.makeText(getApplicationContext(), "Đăng nhập thành công với " + account1.getUsername(), Toast.LENGTH_SHORT).show();
                         if(account1.getRoleID().equals("user")) {
+                            MainAdminActivity.SELECTED = "user";
+                            roleID = response.body().getRoleID();
                             addUserToSharedPref(account1);
                             Intent intent = new Intent(Login.this, MainActivity.class);
                             startActivity(intent);
                         }
                         else{
+                            roleID = response.body().getRoleID();
+                            SharedPrefManager.getInstance(getApplicationContext()).adminLogin(response.body().getRoleID());
                             Intent intent = new Intent(Login.this, MainAdminActivity.class);
                             startActivity(intent);
                         }

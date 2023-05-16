@@ -90,8 +90,24 @@ public class ConfirmOrderFragment extends Fragment implements BillAdapter.Adapte
         // Inflate the layout for this fragment
         binding = FragmentConfirmOrderBinding.inflate(inflater, container, false);
         this.view = binding.getRoot();
-        if(MainAdminActivity.SELECTED.equals("menuHome_admin")) {
-            status = "Uncheck";
+        if(MainAdminActivity.SELECTED.equals("menuOrder_admin")) {
+            status = "UncheckOrder";
+            getConfirmOrder(status);
+        }
+        else if(MainAdminActivity.SELECTED.equals("menuTransport_admin")) {
+            status = "UncheckTransport";
+            getConfirmOrder(status);
+        }
+        else if(MainAdminActivity.SELECTED.equals("menuDelivery_admin")) {
+            status = "UncheckDelivery";
+            getConfirmOrder(status);
+        }
+        else if(MainAdminActivity.SELECTED.equals("menuReceived_admin")) {
+            status = "UncheckReceived";
+            getConfirmOrder(status);
+        }
+        else if(MainAdminActivity.SELECTED.equals("menuCancel_admin")) {
+            status = "Deleted";
             getConfirmOrder(status);
         }
         else {

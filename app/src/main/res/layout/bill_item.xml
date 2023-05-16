@@ -12,7 +12,6 @@
         android:background="@color/background_item"
         android:padding="5dp">
 
-
         <ImageView
             android:id="@+id/billProductImage"
             android:layout_width="48dp"
@@ -20,6 +19,7 @@
             android:layout_gravity="center"
             android:scaleType="centerInside"
             android:src="@drawable/buying" />
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -171,7 +171,52 @@
                     android:text="@string/time"
                     android:textSize="16sp" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/billFeature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/billCancleImage"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/cancel" />
+
+                <TextView
+                    android:id="@+id/txtCancelBill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:scaleType="centerInside"
+                    android:text="Hủy đơn"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+
+                <ImageView
+                    android:id="@+id/billOkImage"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ok" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:text="Xác nhận"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

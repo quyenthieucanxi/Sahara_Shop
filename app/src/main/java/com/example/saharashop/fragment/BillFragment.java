@@ -70,42 +70,4 @@ public class BillFragment extends Fragment {
         }
     }
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        View view = inflater.inflate(R.layout.fragment_notification, container, false);
-//
-//        getNotification(view);
-//
-//        return view;
-//    }
-//
-//    private void setNotification(@NotNull View view) {
-//        NotificationAdapter adapter = new NotificationAdapter(lstNotifications);
-//        RecyclerView rv_account = view.findViewById(R.id.rvNotifications);
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-//        rv_account.setLayoutManager(layoutManager);
-//        rv_account.setAdapter(adapter);
-//    }
-//
-//    public void getNotification(@NotNull View view){
-//        APIService.createService(INotification.class).getAllNotificationsByUserId(user.getId()).enqueue(new Callback<List<Notification>>() {
-//            @Override
-//            public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
-//                if(!response.isSuccessful()){
-//                    Toast.makeText(getContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                lstNotifications = response.body();
-//                setNotification(view);
-//                Toast.makeText(getContext(), "Lấy dữ liệu thông báo thành công", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Notification>> call, Throwable t) {
-//                Toast.makeText(getContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
 }

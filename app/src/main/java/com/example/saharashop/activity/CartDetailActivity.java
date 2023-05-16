@@ -74,7 +74,7 @@ public class CartDetailActivity extends AppCompatActivity {
     }
 
     private void addNotification(){
-        Notification notification = new Notification(user.getId(), "Bạn đã đặt "+quantity+" " + product.getName()+" thành công!", true);
+        Notification notification = new Notification(user.getId(), "Bạn đã đặt "+quantity+" " + product.getName()+" thành công! Và đang chờ admin xác nhận đơn hàng...", true);
         APIService.createService(INotification.class).add(notification).enqueue(new Callback<Notification>() {
             @Override
             public void onResponse(Call<Notification> call, Response<Notification> response) {
