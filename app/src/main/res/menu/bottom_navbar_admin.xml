@@ -4,28 +4,28 @@
     <item
         android:id="@+id/menuOrder_admin"
         android:contentDescription="Đơn hàng"
-        android:icon="@drawable/home"
+        android:icon="@drawable/choices"
         android:title="Đơn hàng"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menuTransport_admin"
         android:contentDescription="Vận chuyển"
-        android:icon="@drawable/pricing"
+        android:icon="@drawable/transport"
         android:title="Vận chuyển"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menuDelivery_admin"
         android:contentDescription="Giao hàng"
-        android:icon="@drawable/service"
+        android:icon="@drawable/delivery"
         android:title="Giao hàng"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menuReceived_admin"
         android:contentDescription="Đã giao"
-        android:icon="@drawable/notifications"
+        android:icon="@drawable/received"
         android:title="Đã giao"
         app:showAsAction="ifRoom" />
 

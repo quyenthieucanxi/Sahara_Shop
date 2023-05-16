@@ -9,11 +9,8 @@ import com.example.saharashop.activity.BillHistoryActivity;
 import com.example.saharashop.activity.BillReceivedActivity;
 import com.example.saharashop.activity.FeatureChangeLanguageActivity;
 import com.example.saharashop.activity.FeatureHelpActivity;
-<<<<<<< HEAD
 import com.example.saharashop.activity.ProductLoveActivity;
-=======
 import com.example.saharashop.activity.Login;
->>>>>>> ThangLuong
 import com.example.saharashop.activity.SettingsActivity;
 import com.example.saharashop.fragment.ConfirmOrderFragment;
 import com.example.saharashop.untils.SharedPrefManager;
@@ -30,30 +27,21 @@ public class MenuItem {
     public static final String MENU_BILL_HISTORY = "Lịch sử hóa đơn";
     public static final String MENU_LANGUAGE = "Chọn ngôn ngữ";
     public static final String MENU_HELP = "Liên hệ hỗ trợ";
-<<<<<<< HEAD
     public static final String MENU_PRODUCT_LOVE = "Sản phầm yêu thích";
-=======
     public static final String MENU_CANCEL_BILL = "Hóa đơn đã hủy";
     public static final String MENU_RECEIVED_BILL = "Hóa đơn đã giao thành công";
->>>>>>> ThangLuong
     public static List<String> menuItemTitle;
     public static List<Class> menuItemClass;
     public static List<Integer> menuItemImage;
 
-<<<<<<< HEAD
-    static {
+    private static void setMenuClassUser(){
         menuItemTitle = Arrays.asList(MENU_ACCOUNT_SETTINGS, MENU_LANGUAGE, MENU_HELP, MENU_BILL_HISTORY, MENU_PRODUCT_LOVE);
         menuItemClass = Arrays.asList(SettingsActivity.class, FeatureChangeLanguageActivity.class, FeatureHelpActivity.class, BillHistoryActivity.class, ProductLoveActivity.class);
-=======
-    private static void setMenuClassUser(){
-        menuItemTitle = Arrays.asList(MENU_ACCOUNT_SETTINGS, MENU_LANGUAGE, MENU_HELP, MENU_BILL_HISTORY);
-        menuItemClass = Arrays.asList(SettingsActivity.class, FeatureChangeLanguageActivity.class, FeatureHelpActivity.class, BillHistoryActivity.class);
->>>>>>> ThangLuong
         menuItemImage = Arrays.asList(
                 R.drawable.history,
                 R.drawable.translation,
                 R.drawable.messaging,
-                R.drawable.settings,
+                R.drawable.billhistory,
                 R.drawable.product_love
         );
     }
@@ -64,8 +52,8 @@ public class MenuItem {
         menuItemImage = Arrays.asList(
                 R.drawable.history,
                 R.drawable.translation,
-                R.drawable.settings,
-                R.drawable.settings
+                R.drawable.billreceived,
+                R.drawable.billcancel
         );
     }
 
