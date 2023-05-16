@@ -62,5 +62,47 @@ class User {
         res.json(err);
       });
   }
+
+  addProductLove(req, res, next) {
+    UserModel.findByIdAndUpdate(req.params.id, {
+      $push: { productLove: req.body.productLove },
+    })
+      .then((result) => {
+        res.json(
+          {
+            ...result,
+            productLove: result.productLove.push(req.body.productLove),
+          }._doc
+        );
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  }
+
+  removeProductLove(req, res, next) {
+    UserModel.findByIdAndUpdate(req.params.id, {
+      $pull: { productLove: req.body.productLove },
+    })
+      .then((result) => {
+        var productLove = result.productLove.filter(
+          (item) => item != req.body.productLove
+        );
+        res.json({
+          _id: result._id,
+          accountId: result.accountId,
+          fullname: result.fullname,
+          sex: result.sex,
+          phone: result.phone,
+          address: result.address,
+          avatar: result.avatar,
+          productLove: productLove,
+          state: result.state,
+        });
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  }
 }
 module.exports = new User();

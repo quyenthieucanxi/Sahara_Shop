@@ -19,5 +19,9 @@ router.get(
   ProductController.getDiscountProductByName
 );
 router.get("/search", ProductController.search);
+router.get(
+  "/getProductLoveByUserId/:id",
+  ProductController.getProductLoveByUserId
+);
 
 module.exports = router;
