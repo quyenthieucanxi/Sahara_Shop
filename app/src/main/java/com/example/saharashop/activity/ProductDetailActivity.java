@@ -3,6 +3,8 @@ package com.example.saharashop.activity;
 import static com.example.saharashop.untils.SharedPrefManager.getIdUser;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,21 +15,28 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.saharashop.R;
+import com.example.saharashop.adapter.BillAdapter;
+import com.example.saharashop.adapter.ReviewAdapter;
 import com.example.saharashop.api.APIService;
 import com.example.saharashop.api.IAuthService;
+import com.example.saharashop.api.IBillService;
 import com.example.saharashop.api.ICartService;
 import com.example.saharashop.api.IProductType;
 import com.example.saharashop.api.IStore;
 import com.example.saharashop.databinding.ActivityProductDetailBinding;
+import com.example.saharashop.entity.Bill;
 import com.example.saharashop.entity.Cart;
 import com.example.saharashop.entity.Product;
+import com.example.saharashop.entity.Review;
 import com.example.saharashop.entity.Store;
 import com.example.saharashop.entity.User;
 import com.example.saharashop.untils.SharedPrefManager;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -40,7 +49,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     public static final String PRODUCT_ID = "productId";
     private Product product = new Product();
     private static Cart cart = new Cart();
+    private List<Review> lstReview = new ArrayList<>();
     private ActivityProductDetailBinding binding;
+    private User user = SharedPrefManager.getInstance(this).getUser();
 
     private int quantity = 0;
     @Override
@@ -61,6 +72,15 @@ public class ProductDetailActivity extends AppCompatActivity {
             binding.btnRemoveProductLove.setVisibility(View.GONE);
             binding.btnAddProductLove.setVisibility(View.VISIBLE);
         }
+        binding.btnAddReview.setVisibility(View.VISIBLE);
+        binding.txtreview.setVisibility(View.GONE);
+        binding.txtreview.setVisibility(View.GONE);
+        binding.reviewFeature.setVisibility(View.GONE);
+
+        binding.btnAddReview.setOnClickListener(view -> displayAddReview());
+        binding.btnCancelReview.setOnClickListener(view -> cancelDisplayAddReview());
+        binding.btnSaveReview.setOnClickListener(view -> saveReview());
+
         binding.btnBackDetail.setOnClickListener(view ->back());
         binding.btnViewCart.setOnClickListener(this::setViewCart);
         binding.plus.setOnClickListener(this::setAddQuantity);
@@ -69,6 +89,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         binding.btnAddProductLove.setOnClickListener(this::setAddProductLove);
         binding.btnRemoveProductLove.setOnClickListener(this::setRemoveProductLove);
         setProduct();
+
     }
     private void back()
     {
@@ -114,8 +135,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                         setProductTitle();
                         setProductDetail();
                         setProductStore();
-                        binding.svReview.setVisibility(View.GONE);
                     }
+                    getReviews();
                 }
                 else
                     Log.d("T", "Sai dữ liệu");
@@ -254,6 +275,71 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Lỗi hệ thống!", Toast.LENGTH_SHORT).show();
 
+            }
+        });
+    }
+
+    private void setReviews() {
+        ReviewAdapter adapter = new ReviewAdapter(getApplicationContext(), lstReview);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        binding.rvProductReview.setLayoutManager(layoutManager);
+        binding.rvProductReview.setAdapter(adapter);
+    }
+
+    public void getReviews(){
+        APIService.createService(IProductType.class).getReviewByProductId(product.getId()).enqueue(new Callback<List<Review>>() {
+            @Override
+            public void onResponse(Call<List<Review>> call, Response<List<Review>> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                lstReview = response.body();
+                setReviews();
+                Toast.makeText(getApplicationContext(), "Lấy dữ liệu review hóa đơn thành công!", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onFailure(Call<List<Review>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void displayAddReview(){
+        binding.btnAddReview.setVisibility(View.GONE);
+        binding.txtreview.setText("");
+        binding.txtreview.setVisibility(View.VISIBLE);
+        binding.txtreview.setVisibility(View.VISIBLE);
+        binding.reviewFeature.setVisibility(View.VISIBLE);
+    }
+    private void cancelDisplayAddReview(){
+        binding.btnAddReview.setVisibility(View.VISIBLE);
+        binding.txtreview.setVisibility(View.GONE);
+        binding.txtreview.setVisibility(View.GONE);
+        binding.reviewFeature.setVisibility(View.GONE);
+    }
+    private void saveReview(){
+        String valueReview = binding.txtreview.getText().toString().trim();
+        if (valueReview.equals("")) {
+            binding.txtreview.setError("Không được để trống!");
+            binding.txtreview.requestFocus();
+            return;
+        }
+        Review newReview = new Review(user.getId(), product.getId(), valueReview);
+        APIService.createService(IProductType.class).add(newReview).enqueue(new Callback<Review>() {
+            @Override
+            public void onResponse(Call<Review> call, Response<Review> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                cancelDisplayAddReview();
+                getReviews();
+                Toast.makeText(getApplicationContext(), "Thêm review thành công!", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onFailure(Call<Review> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Lỗi hệ thống", Toast.LENGTH_SHORT).show();
             }
         });
     }

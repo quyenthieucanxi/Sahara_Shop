@@ -3,6 +3,7 @@ package com.example.saharashop.api;
 import com.example.saharashop.entity.Product;
 import com.example.saharashop.entity.ProductType;
 import com.example.saharashop.entity.Promo;
+import com.example.saharashop.entity.Review;
 import com.example.saharashop.entity.User;
 
 import java.util.ArrayList;
@@ -51,4 +52,10 @@ public interface IProductType {
 
     @GET("product/getProductLoveByUserId/{idUser}")
     Call<List<Product>> getProductLoveByUserId(@Path("idUser") String idUser);
+
+    @GET("review/getReviewByProductId/{productId}")
+    Call<List<Review>> getReviewByProductId(@Path("productId") String productId);
+
+    @POST("review/add")
+    Call<Review> add(@Body Review review);
 }
