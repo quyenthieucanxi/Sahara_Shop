@@ -1,6 +1,7 @@
 const ProductModel = require("../models/Product");
 const ProductTypeModel = require("../models/ProductType");
 const DiscountModel = require("../models/Discount");
+const UserModel = require("../models/User");
 
 class Product {
   getAllProducts(req, res, next) {
@@ -189,6 +190,28 @@ class Product {
       .catch((err) => {
         res.json(err);
       });
+  }
+
+  getProductLoveByUserId(req, res, next) {
+    // Get list productLove by user id
+    var listProductLove = [];
+    Promise.all([
+      UserModel.findOne({ _id: req.params.id })
+        .then((result) => {
+          listProductLove = result.productLove;
+        })
+        .catch((err) => {
+          res.json(err);
+        }),
+    ]).then((result) => {
+      ProductModel.find({ _id: { $in: listProductLove } })
+        .then((result) => {
+          res.json(result);
+        })
+        .catch((err) => {
+          res.json(err);
+        });
+    });
   }
 }
 module.exports = new Product();
